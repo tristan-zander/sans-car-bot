@@ -22,8 +22,8 @@ client.once('ready', () => {
     console.log('Ready!');
     client.user.setPresence({
         status: "online",
-        game: {
-            name: 'Use "sans help" for help',
+        activity: {
+            name: 'use "sans help" for help',
             type: 'PLAYING'
         }
     });
