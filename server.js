@@ -24,7 +24,7 @@ client.once('ready', () => {
         status: "online",
         game: {
             name: 'Use "sans help" for help',
-            trype: 'PLAYING'
+            type: 'PLAYING'
         }
     });
 });
