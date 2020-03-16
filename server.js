@@ -21,9 +21,10 @@ const client = new Discord.Client();
 client.once('ready', () => {
     console.log('Ready!');
     client.user.setPresence({
+        status: "online",
         game: {
             name: 'Use "sans help" for help',
-            status: 'online'
+            trype: 'PLAYING'
         }
     });
 });
@@ -43,9 +44,10 @@ client.on('message', message => {
         message.channel.send(sanscar);
     }
   
-  if (message.content.toLowerCase().includes('bring me the girl')) {
-        const bringMeTheGirl = new Discord.MessageAttachment('');
+  if (message.content.toLowerCase().includes('bring me the girl') || message.content.toLowerCase().includes('kylo ren')) {
+        const bringMeTheGirl = new Discord.MessageAttachment('https://cdn.glitch.com/dbb9f570-9735-4542-ac26-1069d41fa06a%2Fbring%20me%20the%20girl.jpg?v=1584327058499');
 
         message.channel.send(bringMeTheGirl);
     }
+    
 });
