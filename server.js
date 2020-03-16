@@ -1,8 +1,3 @@
-// server.js
-// where your node app starts
-
-// we've started you off with Express (https://expressjs.com/)
-// but feel free to use whatever libraries or frameworks you'd like through `package.json`.
 const http = require("http");
 const express = require("express");
 const app = express();
@@ -35,8 +30,8 @@ client.on('message', message => {
         // do something
     }
 
-    if (message.content.includes('sans car')) {
-        const sanscar = new Discord.MessageAttachment('./Media/sanscar.jpg');
+    if (message.content.toLowerCase().includes('sans car')) {
+        const sanscar = new Discord.MessageAttachment('https://cdn.glitch.com/dbb9f570-9735-4542-ac26-1069d41fa06a%2Fsanscar.jpg?v=1584324797279');
 
         message.channel.send(sanscar);
     }
