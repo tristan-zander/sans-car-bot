@@ -33,7 +33,11 @@ client.once('ready', () => {
 client.login(token);
 
 client.on('message', message => {
-    
+  
+    if (message.member.voice.channel) {
+        const connection = await message.member.voice.channel.join();
+        }
+  
     if (message.content.startsWith(prefix)) {
         console.log('command sent');
         // do something
