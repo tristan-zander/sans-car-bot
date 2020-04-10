@@ -1,6 +1,7 @@
 const http = require("http");
 const express = require("express");
 const app = express();
+const ffmpeg = require('ffmpeg-static');
 
 app.get("/", (request, response) => {
   console.log(Date.now() + " Ping Received");
@@ -38,11 +39,13 @@ client.on("message", async message => {
 
     if (
       message.member.voice.channel &&
-      message.content.toLowerCase().contains("play")
+      message.content.toLowerCase().includes("play")
     ) {
       var connection = await message.member.voice.channel.join();
 
       var dispatcher = connection.play("audio.mp3");
+      
+      
 
       dispatcher.on("start", () => {
         console.log("audio is now playing!");
@@ -60,8 +63,8 @@ client.on("message", async message => {
     }
 
     if (message.content.toLowerCase().includes("leave")) {
-      dispatcher.destroy();
       connection.disconnect();
+      dispatcher.destroy();
     }
   }
 
