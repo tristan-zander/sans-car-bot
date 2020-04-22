@@ -37,6 +37,7 @@ client.on("message", async message => {
     console.log("command sent");
     // do something
 
+    /*
     if (
       message.member.voice.channel &&
       message.content.toLowerCase().includes("play")
@@ -65,7 +66,7 @@ client.on("message", async message => {
     if (message.content.toLowerCase().includes("leave")) {
       connection.disconnect();
       dispatcher.destroy();
-    }
+    } */
   }
 
   if (message.content.toLowerCase().includes("sans car")) {
