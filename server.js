@@ -46,7 +46,8 @@ client.on("message", async message => {
     //console.log("command sent");
     // do something
 
-    console.log(message);
+    let noPrefixMessage = message.content.substr(prefix.length);
+    console.log(noPrefixMessage);
 
   }
 
