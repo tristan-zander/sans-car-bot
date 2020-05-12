@@ -1,5 +1,4 @@
-
-export const ping = {
+module.exports = {
   name: 'ping',
   description: 'Responds with pong.',
   execute(message, args) {

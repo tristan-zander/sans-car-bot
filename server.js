@@ -1,10 +1,8 @@
+const fs = require('fs');
 const http = require("http");
 const express = require("express");
-
-const fs = require("fs");
-
 const app = express();
-const ffmpeg = require("ffmpeg-static");
+const ffmpeg = require('ffmpeg-static');
 
 app.get("/", (request, response) => {
   console.log(Date.now() + " Ping Received");
@@ -23,6 +21,13 @@ const token = process.env.TOKEN;
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
 
+const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+
+for (const file of commandFiles) {
+	const command = require(`./commands/${file}`);
+	client.commands.set(command.name, command);
+}
+
 client.once("ready", () => {
   console.log("Ready!");
   client.user.setPresence({
@@ -38,7 +43,11 @@ client.login(token);
 
 client.on("message", async message => {
   if (message.content.startsWith(prefix)) {
-    // Do commands
+    //console.log("command sent");
+    // do something
+
+    console.log(message);
+
   }
 
   if (message.content.toLowerCase().includes("sans car")) {
