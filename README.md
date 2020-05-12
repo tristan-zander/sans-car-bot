@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # hello-express
 
 A server that serves a webpage, its resources, and some data
@@ -28,3 +29,7 @@ Click `Show` in the header to see your app live. Updates to your code will insta
 Find out more [about Glitch](https://glitch.com/about).
 
 ( ᵔ ᴥ ᵔ )
+=======
+# sans-car-bot
+Discord bot that posts pictures of sans car
+>>>>>>> 97f4a05f434c652e9e35fed2c8d53f200ff7a149
