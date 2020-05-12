@@ -1,5 +1,8 @@
-class Ping {
-  
-}
 
-export default Ping
+export const ping = {
+  name: 'ping',
+  description: 'Responds with pong.',
+  execute(message, args) {
+    message.channel.send('Pong');
+  }
+}

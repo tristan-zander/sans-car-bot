@@ -1,5 +1,8 @@
-const http = require("http");
-const express = require("express");
+const http = require('http');
+const express = require('express');
+
+const fs = require('fs');
+
 const app = express();
 const ffmpeg = require('ffmpeg-static');
 
@@ -18,6 +21,7 @@ const { prefix } = require("./config.json");
 const token = process.env.TOKEN;
 
 const client = new Discord.Client();
+client.commands = new Discord.Collection();
 
 client.once("ready", () => {
   console.log("Ready!");
@@ -34,39 +38,10 @@ client.login(token);
 
 client.on("message", async message => {
   if (message.content.startsWith(prefix)) {
-    console.log("command sent");
-    // do something
-
-    /*
-    if (
-      message.member.voice.channel &&
-      message.content.toLowerCase().includes("play")
-    ) {
-      var connection = await message.member.voice.channel.join();
-
-      var dispatcher = connection.play("audio.mp3");
-      
-      
-
-      dispatcher.on("start", () => {
-        console.log("audio is now playing!");
-        connection.play(
-          "https://cdn.glitch.com/dbb9f570-9735-4542-ac26-1069d41fa06a%2FLive%20and%20Learn%20bass%20boosted.mp3?v=1586489175629",
-          { volume: 0.5 }
-        );
-      });
-
-      dispatcher.on("finish", () => {
-        console.log("audio has finished playing!");
-      });
-
-      dispatcher.on("error", console.error);
-    }
-
-    if (message.content.toLowerCase().includes("leave")) {
-      connection.disconnect();
-      dispatcher.destroy();
-    } */
+    // Do commands
+    
+    
+    
   }
 
   if (message.content.toLowerCase().includes("sans car")) {
