@@ -50,11 +50,19 @@ client.on("message", async message => {
     //console.log("command sent");
     // do something
 
-    const args = message.content.slice(prefix.length).split("");
-    const noPrefixMessage = message.content.substr(prefix.length);
+    const args = message.content.slice(prefix.length).split(" ");
+    const command = args.shift().toLowerCase;
     
+    console.log({ args, command });
 
-    console.log(args);
+    if (!client.commands.has(command)) return;
+
+    try {
+      client.commands.get(command).execute(message, args);
+    } catch(error) {
+      console.log(error);
+      message.reply('There was an error trying to execute this command.');
+    }
 
   }
 
