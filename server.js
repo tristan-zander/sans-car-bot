@@ -25,8 +25,12 @@ const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('
 
 for (const file of commandFiles) {
 	const command = require(`./commands/${file}`);
-	client.commands.set(command.name, command);
+  client.commands.set(command.name, command);
+  
+  console.log(`Added command of name ${command.name}`);
 }
+
+console.log('Finished processing commands.');
 
 client.once("ready", () => {
   console.log("Ready!");
@@ -46,8 +50,11 @@ client.on("message", async message => {
     //console.log("command sent");
     // do something
 
-    let noPrefixMessage = message.content.substr(prefix.length);
-    console.log(noPrefixMessage);
+    const args = message.content.slice(prefix.length).split("");
+    const noPrefixMessage = message.content.substr(prefix.length);
+    
+
+    console.log(args);
 
   }
 
