@@ -1,10 +1,10 @@
-const http = require('http');
-const express = require('express');
+const http = require("http");
+const express = require("express");
 
-const fs = require('fs');
+const fs = require("fs");
 
 const app = express();
-const ffmpeg = require('ffmpeg-static');
+const ffmpeg = require("ffmpeg-static");
 
 app.get("/", (request, response) => {
   console.log(Date.now() + " Ping Received");
@@ -39,9 +39,6 @@ client.login(token);
 client.on("message", async message => {
   if (message.content.startsWith(prefix)) {
     // Do commands
-    
-    
-    
   }
 
   if (message.content.toLowerCase().includes("sans car")) {
