@@ -15,7 +15,7 @@ module.exports = {
 
         let fields = commandFiles.map((file) => {
             const command = require(`../commands/${file}`);
-            return { name: command.name, value: command.description }
+            return { name: '``' + command.name + '``', value: command.description }
         });
 
         if (noPrefixCommandFiles) {
