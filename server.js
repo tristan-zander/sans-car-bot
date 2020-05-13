@@ -33,7 +33,20 @@ for (const file of commandFiles) {
   console.log(`Added command of name ${command.name}`);
 }
 
+client.searchCommands = new Discord.Collection();
+const searchCommands = fs
+  .readdirSync('./no-pref-commands')
+  .filter((file) => file.endsWith('.js'));
+
+for (const file of searchCommands) {
+  const command = require(`./no-pref-commands/${file}`);
+  client.searchCommands.set(command.name, command);
+
+  console.log(`Added search command of name ${command.name}`);
+}
+
 console.log("Finished processing commands.");
+console.log(client.searchCommands);
 
 client.once("ready", () => {
   console.log("Client is ready!");
@@ -50,19 +63,49 @@ client
   .login(process.env.TOKEN)
   .then(() => console.log(`Successfully logged in as ${client.user.tag}.`))
   .catch(err => console.log(`Couldn't log in! ${err}`));
-  // Set up a thing to retry logging in up to 5 times before waiting for 15mins to 1hr
+// Set up a thing to retry logging in up to 5 times before waiting for 15mins to 1hr
 
 client.on("message", async message => {
+
+  const args = message.content.slice(prefix.length).split(" ");
+  const command = args.shift().toLowerCase();
+
+  async function searchForCommand() {
+    let didFind = false;
+    for (const searchCommand in client.searchCommands) {
+
+      for (const include of searchCommand.includes) {
+        if (message.toLowerCase().includes(include)) {
+          console.log(searchCommand);
+          client.searchCommands.get(searchCommand).execute(message, args);
+          didFind = true;
+        }
+      }
+    }
+    return didFind;
+  }
+
   if (message.content.startsWith(prefix)) {
     //console.log("command sent");
     // do something
 
-    const args = message.content.slice(prefix.length).split(" ");
-    const command = args.shift().toLowerCase();
-
     //console.log({ args, command });
 
-    if (!client.commands.has(command)) return message.reply(`'${command}' not found.`);
+    if (!client.commands.has(command)) {
+      if (searchForCommand()) {
+        return;
+      } else {
+        message.reply(`'${command}' not found.`);
+      }
+
+      /*
+      if ( await searchForCommand() === false) {
+        message.reply(`'${command}' not found.`);
+      } else {
+        // Found command
+        return;
+      } */
+    }
 
     try {
       client.commands.get(command).execute(message, args);
@@ -70,25 +113,5 @@ client.on("message", async message => {
       console.log(error);
       message.reply("There was an error trying to execute this command.");
     }
-  }
-
-  // Content that will be sent if it is said anywhere in a message
-  if (message.content.toLowerCase().includes("sans car")) {
-    const sanscar = new Discord.MessageAttachment(
-      "https://cdn.glitch.com/dbb9f570-9735-4542-ac26-1069d41fa06a%2Fsanscar.jpg?v=1584324797279"
-    );
-
-    message.channel.send(sanscar);
-  }
-
-  if (
-    message.content.toLowerCase().includes("bring me the girl") ||
-    message.content.toLowerCase().includes("kylo ren")
-  ) {
-    const bringMeTheGirl = new Discord.MessageAttachment(
-      "https://cdn.glitch.com/dbb9f570-9735-4542-ac26-1069d41fa06a%2Fbring%20me%20the%20girl.jpg?v=1584327058499"
-    );
-
-    message.channel.send(bringMeTheGirl);
   }
 });
