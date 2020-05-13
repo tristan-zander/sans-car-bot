@@ -15,12 +15,12 @@ module.exports = {
 
         const prefFields = commandFiles.map((file) => {
             const command = require(`../commands/${file}`);
-            return { name:  '`' + command.name + '`', value: '`' + command.description +  '`' }
+            return { name:  command.name, value: '`' + command.description +  '`' }
         });
 
         const noPrefFields = noPrefixCommandFiles.map((file) => {
             const command = require(`../no-pref-commands/${file}`);
-            return { name: '`' + command.name + '`', value: '`' + command.description + '`', inline: true }
+            return { name: command.name, value: '`' + command.description + '`', inline: true }
         });
 
         const fields = { prefFields, noPrefFields };
