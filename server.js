@@ -1,8 +1,9 @@
-const fs = require('fs');
+const env = require('dotenv').config();
+const fs = require("fs");
 const http = require("http");
 const express = require("express");
 const app = express();
-const ffmpeg = require('ffmpeg-static');
+const ffmpeg = require("ffmpeg-static");
 
 app.get("/", (request, response) => {
   console.log(Date.now() + " Ping Received");
@@ -21,19 +22,21 @@ const token = process.env.TOKEN;
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
 
-const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+const commandFiles = fs
+  .readdirSync("./commands")
+  .filter(file => file.endsWith(".js"));
 
 for (const file of commandFiles) {
-	const command = require(`./commands/${file}`);
+  const command = require(`./commands/${file}`);
   client.commands.set(command.name, command);
-  
+
   console.log(`Added command of name ${command.name}`);
 }
 
-console.log('Finished processing commands.');
+console.log("Finished processing commands.");
 
 client.once("ready", () => {
-  console.log("Ready!");
+  console.log("Client is ready!");
   client.user.setPresence({
     status: "online",
     activity: {
@@ -43,7 +46,11 @@ client.once("ready", () => {
   });
 });
 
-client.login(token).catch((err) => console.log(`Couldn't log in! ${err}`));
+client
+  .login("Njg4OTExNzY0NzAzNjc0NDMx.XrtD6g.lX9dmCKdPVTUVxPTCMF74MJqPVU")
+  .then(() => console.log(`Successfully logged in as ${client.user.tag}.`))
+  .catch(err => console.log(`Couldn't log in! ${err}`));
+  // Set up a thing to retry logging in up to 5 times before waiting for 15mins to 1hr
 
 client.on("message", async message => {
   if (message.content.startsWith(prefix)) {
@@ -52,19 +59,17 @@ client.on("message", async message => {
 
     const args = message.content.slice(prefix.length).split(" ");
     const command = args.shift().toLowerCase();
-    
-    //console.log({ args, command });
-    //console.log(client.commands);
 
-    if (!client.commands.has(command)) return;
+    //console.log({ args, command });
+
+    if (!client.commands.has(command)) return message.reply(`'${command}' not found.`);
 
     try {
       client.commands.get(command).execute(message, args);
-    } catch(error) {
+    } catch (error) {
       console.log(error);
-      message.reply('There was an error trying to execute this command.');
+      message.reply("There was an error trying to execute this command.");
     }
-
   }
 
   if (message.content.toLowerCase().includes("sans car")) {
