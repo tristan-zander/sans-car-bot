@@ -47,7 +47,7 @@ client.once("ready", () => {
 });
 
 client
-  .login("Njg4OTExNzY0NzAzNjc0NDMx.XrtD6g.lX9dmCKdPVTUVxPTCMF74MJqPVU")
+  .login(process.env.TOKEN)
   .then(() => console.log(`Successfully logged in as ${client.user.tag}.`))
   .catch(err => console.log(`Couldn't log in! ${err}`));
   // Set up a thing to retry logging in up to 5 times before waiting for 15mins to 1hr
