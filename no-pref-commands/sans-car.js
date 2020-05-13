@@ -1,4 +1,4 @@
-module.export = {
+module.exports = {
   name: 'sans car',
   description: 'does the funny thing!',
   execute(message, args) {
