@@ -43,7 +43,7 @@ client.once("ready", () => {
   });
 });
 
-client.login(token);
+client.login(token).catch((err) => console.log(`Couldn't log in! ${err}`));
 
 client.on("message", async message => {
   if (message.content.startsWith(prefix)) {
@@ -51,9 +51,10 @@ client.on("message", async message => {
     // do something
 
     const args = message.content.slice(prefix.length).split(" ");
-    const command = args.shift().toLowerCase;
+    const command = args.shift().toLowerCase();
     
-    console.log({ args, command });
+    //console.log({ args, command });
+    //console.log(client.commands);
 
     if (!client.commands.has(command)) return;
 
