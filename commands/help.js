@@ -7,35 +7,38 @@ module.exports = {
     execute(message, args) {
         // args 0 is always the command name
         const commandFiles = fs
-            .readdirSync("./commands")
+            .readdirSync('./commands')
             .filter(file => file.endsWith(".js"));
         const noPrefixCommandFiles = fs
-            .readdirSync("./commands/no-pref-commands")
+            .readdirSync("./no-pref-commands")
             .filter(file => file.endsWith(".js"));
 
-        let fields = commandFiles.map((file) => {
+        const prefFields = commandFiles.map((file) => {
             const command = require(`../commands/${file}`);
-            return { name: command.name, value: command.description }
+            return { name:  command.name, value: '`' + command.description +  '`' }
         });
 
-        if (noPrefixCommandFiles) {
-            fields.push(noPrefixCommandFiles.map((file) => {
-                const command = require(`../commands/no-pref-commands/${file}`);
-                return { name: command.name, value: command.description, inline: true }
-            }));
-        }
+        const noPrefFields = noPrefixCommandFiles.map((file) => {
+            const command = require(`../no-pref-commands/${file}`);
+            return { name: command.name, value: '`' + command.description + '`', inline: true }
+        });
+
+        const fields = { prefFields, noPrefFields };
+
+        console.log({ fields, prefFields, noPrefFields });
 
         const reply = new Discord.MessageEmbed()
             .setColor('#0099ff')
             .setTitle('Commands List')
             .setURL('https://sanscarbot.glitch.me/website')
             .setAuthor('Sans Bot', 'https://cdn.glitch.com/dbb9f570-9735-4542-ac26-1069d41fa06a%2Fsans-car-square.jpg?v=1589380617092', 'https://sanscarbot.glitch.me/website')
-            .setDescription(`Here's a list of all commands.`)
+            //.setDescription(`Here's a list of all commands.`)
             .addFields(
                 /*{ name: 'Regular field title', value: 'Some value here' },
                 { name: 'Inline field title', value: 'Some value here', inline: true },
                 { name: 'Inline field title', value: 'Some value here', inline: true },*/
-                fields
+                fields.prefFields,
+                fields.noPrefFields
             )
             //.addField('Inline field title', 'Some value here', true)
             .setTimestamp()
