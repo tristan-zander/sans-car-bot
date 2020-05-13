@@ -72,6 +72,7 @@ client.on("message", async message => {
     }
   }
 
+  // Content that will be sent if it is said anywhere in a message
   if (message.content.toLowerCase().includes("sans car")) {
     const sanscar = new Discord.MessageAttachment(
       "https://cdn.glitch.com/dbb9f570-9735-4542-ac26-1069d41fa06a%2Fsanscar.jpg?v=1584324797279"
