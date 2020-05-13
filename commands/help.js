@@ -21,7 +21,7 @@ module.exports = {
         if (noPrefixCommandFiles) {
             fields.push(noPrefixCommandFiles.map((file) => {
                 const command = require(`../commands/no-pref-commands/${file}`);
-                return { name: command.name, value: command.description, inline: true }
+                return { name: '``' + command.name + '``', value: command.description, inline: true }
             }));
         }
 
