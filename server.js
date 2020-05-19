@@ -99,10 +99,10 @@ client.on("message", async message => {
 
   // Async for taking out of a database in the future
   async function getCommand(commandName) {
-    const file = await client.commands.get(commandName);
-    console.log(file);
+    const promise = await client.commands.get(commandName);
+    console.log(promise);
 
-    return file;
+    return promise;
   }
 
   /*
@@ -113,7 +113,8 @@ client.on("message", async message => {
     return file;
   } */
 
-  if (message.content.startsWith(prefix)) {
+  // If it starts with a prefix
+  if (message.content.toLowerCase().startsWith(prefix)) {
     //console.log("command sent");
 
     if (!client.commands.has(command)) {

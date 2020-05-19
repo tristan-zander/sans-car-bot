@@ -17,10 +17,12 @@ module.exports = {
       const command = require(`../commands/${file}`);
       if (
         command.name === undefined ||
-        command.description === undefined ||
-        command.hide === true
+        command.description === undefined
       )
         return;
+      if (command.hide === true) {
+        return;
+      }
       return { name: command.name, value: "`" + command.description + "`" };
     });
 
@@ -54,7 +56,7 @@ module.exports = {
                         { name: 'Inline field title', value: 'Some value here', inline: true },
                         { name: 'Inline field title', value: 'Some value here', inline: true },*/
         fields.prefFields,
-        { name: " ", value: " " },
+        { name: "\u200B", value: "\u200B" },
         fields.noPrefFields
       )
       //.addField('Inline field title', 'Some value here', true)
