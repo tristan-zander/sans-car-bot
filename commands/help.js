@@ -22,12 +22,7 @@ module.exports = {
           return;
         }
         return { name: command.name, value: "`" + command.description + "`" };
-      })
-      .filter(field =>
-        (!field.name || !field.description)
-          ? false
-          : true
-      );
+      });
 
     const noPrefFields = noPrefixCommandFiles
       .map(file => {
@@ -39,12 +34,7 @@ module.exports = {
           value: "`" + command.description + "`",
           inline: true
         };
-      })
-      .filter(field =>
-        (!field.name || !field.description)
-          ? false
-          : true
-      );
+      });
 
     const fields = { prefFields, noPrefFields };
 
