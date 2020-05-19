@@ -13,29 +13,38 @@ module.exports = {
       .readdirSync("./no-pref-commands")
       .filter(file => file.endsWith(".js"));
 
-    const prefFields = commandFiles.map(file => {
-      const command = require(`../commands/${file}`);
-      if (
-        command.name === undefined ||
-        command.description === undefined
-      )
-        return;
-      if (command.hide === true) {
-        return;
-      }
-      return { name: command.name, value: "`" + command.description + "`" };
-    });
+    const prefFields = commandFiles
+      .map(file => {
+        const command = require(`../commands/${file}`);
+        if (command.name === undefined || command.description === undefined)
+          return;
+        if (command.hide === true) {
+          return;
+        }
+        return { name: command.name, value: "`" + command.description + "`" };
+      })
+      .filter(field =>
+        (!field.name || !field.description)
+          ? false
+          : true
+      );
 
-    const noPrefFields = noPrefixCommandFiles.map(file => {
-      const command = require(`../no-pref-commands/${file}`);
-      if (command.name === undefined || command.description === undefined)
-        return;
-      return {
-        name: command.name,
-        value: "`" + command.description + "`",
-        inline: true
-      };
-    });
+    const noPrefFields = noPrefixCommandFiles
+      .map(file => {
+        const command = require(`../no-pref-commands/${file}`);
+        if (command.name === undefined || command.description === undefined)
+          return;
+        return {
+          name: command.name,
+          value: "`" + command.description + "`",
+          inline: true
+        };
+      })
+      .filter(field =>
+        (!field.name || !field.description)
+          ? false
+          : true
+      );
 
     const fields = { prefFields, noPrefFields };
 
