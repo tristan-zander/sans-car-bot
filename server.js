@@ -121,7 +121,10 @@ client.on("message", async message => {
     }
 
     try {
-      getCommand(command).execute(message, args);
+      const tryCommand = getCommand(command)
+      if (tryCommand) {
+        tryCommand.execute(message, args);
+      }
     } catch (error) {
       console.log(error);
       message.reply("There was an error trying to execute this command.");
