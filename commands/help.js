@@ -17,23 +17,37 @@ module.exports = {
       .map(file => {
         const command = require(`../commands/${file}`);
         if (command.name === undefined || command.description === undefined)
-          return;
+          return { name: "null", description: "null" };
         if (command.hide === true) {
-          return;
+          return { name: "null", description: "null" };
         }
         return { name: command.name, value: "`" + command.description + "`" };
+      })
+      .filter(field => {
+        if (field.name === "null" || field.description === "null") {
+          return false;
+        } else {
+          return true;
+        }
       });
 
     const noPrefFields = noPrefixCommandFiles
       .map(file => {
         const command = require(`../no-pref-commands/${file}`);
         if (command.name === undefined || command.description === undefined)
-          return;
+          return { name: "null", description: "null" };
         return {
           name: command.name,
           value: "`" + command.description + "`",
           inline: true
         };
+      })
+      .filter(field => {
+        if (field.name === "null" || field.description === "null") {
+          return false;
+        } else {
+          return true;
+        }
       });
 
     const fields = { prefFields, noPrefFields };
