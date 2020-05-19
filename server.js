@@ -98,19 +98,20 @@ client.on("message", async message => {
   }
 
   // Async for taking out of a database in the future
-  async function getCommand(command) {
-    const file = await client.commands.get(command);
+  async function getCommand(commandName) {
+    const file = await client.commands.get(commandName);
     console.log(file);
 
     return file;
   }
 
+  /*
   async function getSearchCommand(command) {
     const file = await client.searchCommands.get(command);
     console.log(file);
 
     return file;
-  }
+  } */
 
   if (message.content.startsWith(prefix)) {
     //console.log("command sent");
@@ -121,7 +122,10 @@ client.on("message", async message => {
     }
 
     try {
-      getCommand(command).execute(message, args);
+      getCommand(command)
+        .then((comm) => {
+          comm.execute(message, args);
+        });
     } catch (error) {
       console.log(error);
       message.reply("There was an error trying to execute this command.");
