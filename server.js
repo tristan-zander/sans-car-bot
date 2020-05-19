@@ -38,80 +38,96 @@ const searchCommands = fs
   .readdirSync('./no-pref-commands')
   .filter((file) => file.endsWith('.js'));
 
-for (const file of searchCommands) {
-  const command = require(`./no-pref-commands/${file}`);
-  client.searchCommands.set(command.name, command);
+let searchIncludes = [];
 
-  console.log(`Added search command of name ${command.name}`);
+for (const file of searchCommands) {
+  const sCommand = require(`./no-pref-commands/${file}`);
+  client.searchCommands.set(sCommand.name, sCommand);
+
+  searchIncludes.push({ includes: sCommand.includes, command: sCommand });
+
+  console.log(`Added search command of name ${sCommand.name}`);
 }
 
 console.log("Finished processing commands.");
-console.log(client.searchCommands);
+console.log(client.searchCommands, client.commands, searchIncludes);
 
-client.once("ready", () => {
-  console.log("Client is ready!");
-  client.user.setPresence({
-    status: "online",
-    activity: {
-      name: 'use "sans help" for help',
-      type: "PLAYING"
-    }
+setStatus();
+login();
+
+function setStatus() {
+  client.once("ready", () => {
+    console.log("Client is ready!");
+    client.user.setPresence({
+      status: "online",
+      activity: {
+        name: 'use "sans help" for help',
+        type: "PLAYING"
+      }
+    });
   });
-});
+}
 
-client
-  .login(process.env.TOKEN)
-  .then(() => console.log(`Successfully logged in as ${client.user.tag}.`))
-  .catch(err => console.log(`Couldn't log in! ${err}`));
-// Set up a thing to retry logging in up to 5 times before waiting for 15mins to 1hr
+async function login() {
+  await client
+    .login(process.env.TOKEN)
+    .then(() => console.log(`Successfully logged in as ${client.user.tag}.`))
+    .catch(err => console.log(`Couldn't log in! ${err}`));
+  // Set up a thing to retry logging in up to 5 times before waiting for 15mins to 1hr
+}
 
 client.on("message", async message => {
 
   const args = message.content.slice(prefix.length).split(" ");
   const command = args.shift().toLowerCase();
 
-  async function searchForCommand() {
+  function searchForCommand() {
     let didFind = false;
-    for (const searchCommand in client.searchCommands) {
 
-      for (const include of searchCommand.includes) {
-        if (message.toLowerCase().includes(include)) {
-          console.log(searchCommand);
-          client.searchCommands.get(searchCommand).execute(message, args);
+    searchIncludes.forEach((search) => {
+      search.includes.forEach((include) => {
+        if (message.content.includes(include)) {
+          // Execute message
+          search.command.execute(message, args);
           didFind = true;
         }
-      }
-    }
+      })
+    });
+
     return didFind;
+  }
+
+  // Async for taking out of a database in the future
+  async function getCommand(command) {
+    const file = await client.commands.get(command);
+    console.log(file);
+
+    return file;
+  }
+
+  async function getSearchCommand(command) {
+    const file = await client.searchCommands.get(command);
+    console.log(file);
+
+    return file;
   }
 
   if (message.content.startsWith(prefix)) {
     //console.log("command sent");
-    // do something
-
-    //console.log({ args, command });
 
     if (!client.commands.has(command)) {
-      if (searchForCommand()) {
-        return;
-      } else {
-        message.reply(`'${command}' not found.`);
-      }
-
-      /*
-      if ( await searchForCommand() === false) {
-        message.reply(`'${command}' not found.`);
-      } else {
-        // Found command
-        return;
-      } */
+      message.reply(`'${command}' not found.`);
+      return;
     }
 
     try {
-      client.commands.get(command).execute(message, args);
+      getCommand(command).execute(message, args);
     } catch (error) {
       console.log(error);
       message.reply("There was an error trying to execute this command.");
     }
+  } else {
+    searchForCommand();
   }
+
 });
