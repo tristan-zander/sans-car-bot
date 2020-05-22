@@ -1,0 +1,18 @@
+.grid-container {
+    display: grid;
+    grid-template-columns: 60% 20% 20%;
+    grid-template-rows: 10% 70% 20%;
+    height: 100vh;
+}
+
+.body {
+    grid-area: 2 / 1 / 2 / 2;
+    background-color: #f1d1f1;
+}
+
+.footer {
+    grid-row: 3;
+    grid-column: 1 / 4;
+    background-color: #333;
+    color: white;
+}
