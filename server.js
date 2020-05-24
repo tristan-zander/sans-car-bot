@@ -5,7 +5,7 @@ const express = require("express");
 const app = express();
 const ffmpeg = require("ffmpeg-static");
 
-app.get("/", (request, response) => {
+app.get("/api/ping", (request, response) => {
   console.log(Date.now() + " Ping Received");
   response.sendStatus(200);
 });
@@ -13,7 +13,7 @@ app.get("/", (request, response) => {
 app.listen(process.env.PORT);
 
 setInterval(() => {
-  http.get(`http://${process.env.PROJECT_DOMAIN}.glitch.me/`);
+  http.get(`http://${process.env.PROJECT_DOMAIN}.glitch.me/api/ping`);
 }, 280000);
 
 const Discord = require("discord.js");
