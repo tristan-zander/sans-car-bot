@@ -3,20 +3,35 @@ const fs = require("fs");
 const http = require("http");
 const express = require("express");
 const app = express();
-const ffmpeg = require("ffmpeg-static");
 
-app.get("/api/ping", (request, response) => {
-  console.log(Date.now() + " Ping Received");
-  response.sendStatus(200);
-});
 
-app.listen(process.env.PORT);
+/*
+
+BEGIN EXPRESS ROUTING
+
+*/
+
+// Enable Ping api
+app.use('/api/ping/', require('./routes/api/ping'));
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Started listening on port ${PORT}`) );
 
 setInterval(() => {
   http.get(`http://${process.env.PROJECT_DOMAIN}.glitch.me/api/ping`);
 }, 280000);
 
+
+
+
+
+/* 
+
+BEGIN DISCORD BOT
+
+*/
 const Discord = require("discord.js");
+const ffmpeg = require("ffmpeg-static");
 const { prefix } = require("./config.json");
 const token = process.env.TOKEN;
 
