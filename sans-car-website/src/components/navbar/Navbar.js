@@ -1,8 +1,5 @@
 import React, { useState } from 'react'
 
-import { ReactComponent as CogIcon } from '../../icons/cog.svg';
-import { ReactComponent as ChevronIcon} from '../../icons/chevron.svg'
-
 import './Navbar.css';
 
 export function Navbar(props) {
@@ -15,14 +12,31 @@ export function Navbar(props) {
     )
 }
 
-export function NavItem(props) {
+export function DropdownNavItem(props) {
 
     const [open, setOpen] = useState(false);
 
     return (
-        <li className="nav-item">
+        <li className="dropdown-nav-item">
             <a href="#" className="icon-button" onClick={() => setOpen(!open)}>
                 {props.icon}
+            </a>
+
+            {open && props.children}
+        </li>
+    );
+}
+
+export function NavItem(props) {
+
+    const [open, setOpen] = useState(false);
+
+    const path = props.location || "#";
+
+    return (
+        <li className="nav-item">
+            <a href={path} className={props.icon ? "icon-button" : "text-button"} onClick={() => setOpen(!open)}>
+                {props.icon || props.title}
             </a>
 
             {open && props.children}
@@ -33,13 +47,11 @@ export function NavItem(props) {
 export function DropdownMenu(props) {
 
     function DropdownItem(props) {
+        const path = props.location;
+
         return (
-            <a href="#" className="menu-item">
-                <span className="icon-button">{props.leftIcon}</span>
-    
+            <a href={path} className="menu-item">
                 {props.children}
-    
-                <span className="icon-right icon-button">{props.rightIcon}</span>
             </a>
         );
     }
@@ -47,12 +59,13 @@ export function DropdownMenu(props) {
 
     return (
         <div className="dropdown">
-            <DropdownItem leftIcon={<CogIcon />} rightIcon={<ChevronIcon />}>My Profile</DropdownItem>
-            <DropdownItem>Help</DropdownItem>
+            <DropdownItem location="/">Home</DropdownItem>
+            <DropdownItem location="/about">About</DropdownItem>
+            <DropdownItem location="/add-bot">Add Sans Car</DropdownItem>
         </div>
     );
 }
 
 
 
-export default { Navbar, NavItem, DropdownMenu }
+export default { Navbar, DropdownNavItem, NavItem, DropdownMenu }
