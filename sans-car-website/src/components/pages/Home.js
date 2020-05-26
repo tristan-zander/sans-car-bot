@@ -17,16 +17,72 @@ export default function Home() {
             </div>
 
             <div className="features grid-item">
-                {/*Put features here*/}
+                {/*Put features here. Use apis and don't hard code*/}
                 <h1>Features</h1>
+
+                <div className="grid-item-wrapper">
+                    <h2>GET "/api/ping"</h2>
+                    <p>Pings the server to keep it alive</p>
+                </div>
+                <div className="grid-item-wrapper">
+                    <h2>GET "/api/ping"</h2>
+                    <p>Pings the server to keep it alive</p>
+                </div>
+                <div className="grid-item-wrapper">
+                    <h2>GET "/api/ping"</h2>
+                    <p>Pings the server to keep it alive</p>
+                </div>
+                <div className="grid-item-wrapper">
+                    <h2>GET "/api/ping"</h2>
+                    <p>Pings the server to keep it alive</p>
+                </div>
+                <div className="grid-item-wrapper">
+                    <h2>GET "/api/ping"</h2>
+                    <p>Pings the server to keep it alive</p>
+                </div>
+                <div className="grid-item-wrapper">
+                    <h2>GET "/api/ping"</h2>
+                    <p>Pings the server to keep it alive</p>
+                </div>
+                <div className="grid-item-wrapper">
+                    <h2>GET "/api/ping"</h2>
+                    <p>Pings the server to keep it alive</p>
+                </div>
+                <div className="grid-item-wrapper">
+                    <h2>GET "/api/ping"</h2>
+                    <p>Pings the server to keep it alive</p>
+                </div>
+                <div className="grid-item-wrapper">
+                    <h2>GET "/api/ping"</h2>
+                    <p>Pings the server to keep it alive</p>
+                </div>
+
             </div>
 
             <div className="documentation grid-item">
-                {/* Put documentation and apis here */}
+                {/* Put documentation and apis here. Use apis and don't hard code */}
                 <h1>Api Documentation</h1>
 
-                <h2>GET "/api/ping"</h2>
-                <p>Pings the server to keep it alive</p>
+                <div className="grid-item-wrapper">
+                    <h2>GET "/api/ping"</h2>
+                    <p>Pings the server to keep it alive</p>
+                </div>
+                <div className="grid-item-wrapper">
+                    <h2>GET "/api/ping"</h2>
+                    <p>Pings the server to keep it alive</p>
+                </div>
+                <div className="grid-item-wrapper">
+                    <h2>GET "/api/ping"</h2>
+                    <p>Pings the server to keep it alive</p>
+                </div>
+                <div className="grid-item-wrapper">
+                    <h2>GET "/api/ping"</h2>
+                    <p>Pings the server to keep it alive</p>
+                </div>
+                <div className="grid-item-wrapper">
+                    <h2>GET "/api/ping"</h2>
+                    <p>Pings the server to keep it alive</p>
+                </div>
             </div>
             <Footer />
         </div>
