@@ -11,7 +11,7 @@ export default function Home() {
         <div className="grid-container">
             <DefaultNavbar />
             <div className="body">
-                <h1>Sans Car Bot for Discord</h1>
+                <h1 className="main-header">Sans Car Bot for Discord</h1>
                 <div className="discord-mock">
                     <img src="https://cdn.glitch.com/dbb9f570-9735-4542-ac26-1069d41fa06a%2Fsanscar.jpg?v=1584324797279" alt="Sans car"></img>
                     <button>Add Sans Car to your server</button>

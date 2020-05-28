@@ -76,7 +76,7 @@ div h1 {
 }
 
 .discord-mock {
-    margin: 5vh 15vh 0vh;
+    margin: 15vh 15vh 15vh;
     background-color: #36393f;
     border-radius: 9px;
     display: flex;
@@ -103,6 +103,12 @@ div h1 {
     margin: 20px;
     padding: 5px 10px;
     border-radius: 8px;
+}
+
+.main-header {
+    margin: 20px;
+    font-size: 46px;
+    text-align: left;
 }
 
 @media screen and (max-width: 1280px) {
