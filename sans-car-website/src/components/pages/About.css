@@ -1,9 +1,0 @@
-.about {
-    grid-area: 2 / 1 / 2 / 4;
-    background-color: #7F7979;
-    color: #fff;
-}
-
-.about-container {
-    padding: 2rem;
-}
