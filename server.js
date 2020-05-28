@@ -115,17 +115,10 @@ client.on("message", async message => {
 
   // Async for taking out of a database in the future
   async function getCommand(commandName) {
-<<<<<<< HEAD
     const promise = await client.commands.get(commandName);
     console.log(promise);
 
     return promise;
-=======
-    const file = await client.commands.get(commandName);
-    console.log(file);
-
-    return file;
->>>>>>> 87509739835f8fd8fe1bf5116fe552421773ab4b
   }
 
   /*
@@ -135,7 +128,6 @@ client.on("message", async message => {
 
     return file;
   } */
-<<<<<<< HEAD
 
   // If it starts with a prefix
   if (message.content.toLowerCase().startsWith(prefix)) {
@@ -146,17 +138,6 @@ client.on("message", async message => {
       return;
     }
 
-=======
-
-  if (message.content.startsWith(prefix)) {
-    //console.log("command sent");
-
-    if (!client.commands.has(command)) {
-      message.reply(`'${command}' not found.`);
-      return;
-    }
-
->>>>>>> 87509739835f8fd8fe1bf5116fe552421773ab4b
     try {
       getCommand(command)
         .then((comm) => {
