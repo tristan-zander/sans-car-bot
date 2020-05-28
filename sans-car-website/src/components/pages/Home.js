@@ -14,7 +14,10 @@ export default function Home() {
                 <h1 className="main-header">Sans Car Bot for Discord</h1>
                 <div className="discord-mock">
                     <img src="https://cdn.glitch.com/dbb9f570-9735-4542-ac26-1069d41fa06a%2Fsanscar.jpg?v=1584324797279" alt="Sans car"></img>
-                    <button>Add Sans Car to your server</button>
+                    <button type="button" onClick={() => {
+                        // Move to /add-bot
+                        window.location.href = "/add-bot";
+                    }}>Add Sans Car to your server</button>
                 </div>
             </div>
 
@@ -24,40 +27,14 @@ export default function Home() {
 
                 <div className="grid-item">
                     <div className="grid-item-wrapper">
-                        <h2>GET "/api/ping"</h2>
-                        <p>Pings the server to keep it alive</p>
+                        <h2>Help Command</h2>
+                        <p>Use "sans help" in a discord server for a list of commands.</p>
                     </div>
                     <div className="grid-item-wrapper">
-                        <h2>GET "/api/ping"</h2>
-                        <p>Pings the server to keep it alive</p>
-                    </div>
-                    <div className="grid-item-wrapper">
-                        <h2>GET "/api/ping"</h2>
-                        <p>Pings the server to keep it alive</p>
-                    </div>
-                    <div className="grid-item-wrapper">
-                        <h2>GET "/api/ping"</h2>
-                        <p>Pings the server to keep it alive</p>
-                    </div>
-                    <div className="grid-item-wrapper">
-                        <h2>GET "/api/ping"</h2>
-                        <p>Pings the server to keep it alive</p>
-                    </div>
-                    <div className="grid-item-wrapper">
-                        <h2>GET "/api/ping"</h2>
-                        <p>Pings the server to keep it alive</p>
-                    </div>
-                    <div className="grid-item-wrapper">
-                        <h2>GET "/api/ping"</h2>
-                        <p>Pings the server to keep it alive</p>
-                    </div>
-                    <div className="grid-item-wrapper">
-                        <h2>GET "/api/ping"</h2>
-                        <p>Pings the server to keep it alive</p>
-                    </div>
-                    <div className="grid-item-wrapper">
-                        <h2>GET "/api/ping"</h2>
-                        <p>Pings the server to keep it alive</p>
+                        <h2>New Additions</h2>
+                        <p>This bot is a project to help me learn programming concepts. Contact me if
+                            there are any new features that you would like to see in the bot. 
+                        </p>
                     </div>
                 </div>
 
@@ -68,22 +45,6 @@ export default function Home() {
                 <h1>Api Documentation</h1>
 
                 <div className="grid-item">
-                    <div className="grid-item-wrapper">
-                        <h2>GET "/api/ping"</h2>
-                        <p>Pings the server to keep it alive</p>
-                    </div>
-                    <div className="grid-item-wrapper">
-                        <h2>GET "/api/ping"</h2>
-                        <p>Pings the server to keep it alive</p>
-                    </div>
-                    <div className="grid-item-wrapper">
-                        <h2>GET "/api/ping"</h2>
-                        <p>Pings the server to keep it alive</p>
-                    </div>
-                    <div className="grid-item-wrapper">
-                        <h2>GET "/api/ping"</h2>
-                        <p>Pings the server to keep it alive</p>
-                    </div>
                     <div className="grid-item-wrapper">
                         <h2>GET "/api/ping"</h2>
                         <p>Pings the server to keep it alive</p>

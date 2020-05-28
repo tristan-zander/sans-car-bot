@@ -50,20 +50,20 @@ div h1 {
 
 .body {
     grid-area: 2 / 1 / 2 / 2;
-    background-color: #F09D51;
+    background-color: #7F7979;
     color: white;
 }
 
 .features {
     grid-area: 2 / 2 / 2 / 3;
-    background-color: #D4CB92;
+    background-color: #3D3B3C;
     color: white;
     overflow-y: auto;
 }
 
 .documentation {
     grid-area: 2 / 3 / 2 / 4;
-    background-color: #B3AE6F;
+    background-color: #323031;
     color: white;
     overflow-y: auto;
 }
@@ -73,6 +73,7 @@ div h1 {
     grid-column: 1 / 4;
     background-color: #242526;
     color: white;
+    padding: 1rem;
 }
 
 .discord-mock {
@@ -163,5 +164,9 @@ div h1 {
             calc(100vh - calc(var(--nav-size) / 2)) 
             calc(100vh - calc(var(--nav-size) / 2)) 
             calc(30vh - calc(var(--nav-size) / 2));
+    }
+
+    .discord-mock img {
+        display: none;
     }
 }
