@@ -2,8 +2,12 @@ const Discord = require('discord.js');
 
 module.exports = {
     name: 'car',
+<<<<<<< HEAD
     description: 'THE FUNNY THING LOLOL but only when you type it at the beginning of a sentence. (Daily count of sans car calls soon)',
     hide: true,
+=======
+    description: 'THE FUNNY THING LOLOL but only when you type it at the beginning of a sentence. (Daily )',
+>>>>>>> 87509739835f8fd8fe1bf5116fe552421773ab4b
     execute: function(message, args) {
         const sanscar = new Discord.MessageAttachment(
             "https://cdn.glitch.com/dbb9f570-9735-4542-ac26-1069d41fa06a%2Fsanscar.jpg?v=1584324797279"
