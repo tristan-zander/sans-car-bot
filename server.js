@@ -13,13 +13,12 @@ BEGIN EXPRESS ROUTING
 
 */
 
-/*
+
 const credentials = {
   key: fs.readFileSync('keys/website.key'),
   cert: fs.readFileSync('keys/website.crt')
 }
 const httpsServer = https.createServer(credentials, app);
-*/
 
 // Enable Ping api
 app.use('/api/ping/', require('./routes/api/ping'));
