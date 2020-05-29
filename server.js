@@ -19,7 +19,6 @@ const credentials = {
   cert: fs.readFileSync('keys/website.crt')
 }
 const httpsServer = https.createServer(credentials, app);
-httpsServer.listen(3010);
 
 // Enable Ping api
 app.use('/api/ping/', require('./routes/api/ping'));
