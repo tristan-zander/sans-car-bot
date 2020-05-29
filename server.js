@@ -1,8 +1,10 @@
 const env = require('dotenv').config();
 const fs = require("fs");
 const http = require("http");
+const https = require("https");
 const express = require("express");
 const app = express();
+const path = require('path');
 
 
 /*
@@ -11,18 +13,27 @@ BEGIN EXPRESS ROUTING
 
 */
 
+// const httpsServer = https.createServer(credentials, app);
+
 // Enable Ping api
 app.use('/api/ping/', require('./routes/api/ping'));
+
+// Set static website path
+const BUILD_PATH = process.env.BUILD_PATH;
+if (!BUILD_PATH) console.log("Error getting the build path.");
+app.use(express.static(BUILD_PATH));
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Started listening on port ${PORT}`) );
 
 setInterval(() => {
-  http.get(`http://${process.env.PROJECT_DOMAIN}.glitch.me/api/ping`);
+  http.get(`http://${process.env.PROJECT_DOMAIN}/api/ping`);
 }, 280000);
 
 
-
+app.get('/*', (req, res) => {
+  res.sendFile(path.join(BUILD_PATH, "index.html"));
+});
 
 
 /* 
