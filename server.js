@@ -13,12 +13,10 @@ BEGIN EXPRESS ROUTING
 
 */
 
+const pfx = fs.readFileSync('keys/website.pfx');
+const passphrase = process.env.PASSPHRASE; 
 
-const credentials = {
-  key: fs.readFileSync('keys/website.key'),
-  cert: fs.readFileSync('keys/website.crt')
-}
-const httpsServer = https.createServer(credentials, app);
+const credentials = { pfx: pfx, passphrase: passphrase }
 
 // Enable Ping api
 app.use('/api/ping/', require('./routes/api/ping'));
@@ -28,8 +26,13 @@ const BUILD_PATH = process.env.BUILD_PATH;
 if (!BUILD_PATH) console.log("Error getting the build path.");
 app.use(express.static(BUILD_PATH));
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Started listening on port ${PORT}`) );
+const HTTP_PORT = process.env.HTTP_PORT || process.env.FALLBACK_PORT;
+const HTTPS_PORT = process.env.HTTPS_PORT || process.env.FALLBACK_PORT + 1;
+
+http.createServer(app).listen(HTTP_PORT);
+https.createServer(credentials, app).listen(HTTPS_PORT);
+
+// app.listen(PORT, () => console.log(`Started listening on port ${PORT}`) );
 
 setInterval(() => {
   http.get(`http://${process.env.PROJECT_DOMAIN}/api/ping`);
