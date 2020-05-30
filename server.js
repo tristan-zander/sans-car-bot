@@ -14,7 +14,7 @@ BEGIN EXPRESS ROUTING
 */
 
 const pfx = fs.readFileSync('keys/website.pfx');
-const passphrase = process.env.PASSPHRASE; 
+const passphrase = process.env.PASSPHRASE;
 
 const credentials = { pfx: pfx, passphrase: passphrase }
 
@@ -24,13 +24,26 @@ app.use('/api/ping/', require('./routes/api/ping'));
 // Set static website path
 const BUILD_PATH = process.env.BUILD_PATH;
 if (!BUILD_PATH) console.log("Error getting the build path.");
-app.use(express.static(BUILD_PATH));
 
 const HTTP_PORT = process.env.HTTP_PORT || process.env.FALLBACK_PORT;
 const HTTPS_PORT = process.env.HTTPS_PORT || process.env.FALLBACK_PORT + 1;
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: false}));
+
+app.use((req, res, next) => {
+  if (req.secure) {
+    next();
+  } else {
+    res.redirect('https://' + req.headers.host + req.url);
+  }
+});
+
+
 http.createServer(app).listen(HTTP_PORT);
 https.createServer(credentials, app).listen(HTTPS_PORT);
+
+app.use(express.static(BUILD_PATH));
 
 // app.listen(PORT, () => console.log(`Started listening on port ${PORT}`) );
 
@@ -40,6 +53,8 @@ setInterval(() => {
 
 
 app.get('/*', (req, res) => {
+
+  // Redirect to https://
   res.sendFile(path.join(BUILD_PATH, "index.html"));
 });
 
