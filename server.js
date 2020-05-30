@@ -18,19 +18,10 @@ const passphrase = process.env.PASSPHRASE;
 
 const credentials = { pfx: pfx, passphrase: passphrase }
 
-// Enable Ping api
-app.use('/api/ping/', require('./routes/api/ping'));
-
-// Set static website path
-const BUILD_PATH = process.env.BUILD_PATH;
-if (!BUILD_PATH) console.log("Error getting the build path.");
-
 const HTTP_PORT = process.env.HTTP_PORT || process.env.FALLBACK_PORT;
 const HTTPS_PORT = process.env.HTTPS_PORT || process.env.FALLBACK_PORT + 1;
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: false}));
-
+// Make sure connection is https
 app.use((req, res, next) => {
   if (req.secure) {
     next();
@@ -39,21 +30,27 @@ app.use((req, res, next) => {
   }
 });
 
+// Enable Ping api
+app.use('/api/ping/', require('./routes/api/ping'));
+
+// Set static website path
+const BUILD_PATH = process.env.BUILD_PATH;
+if (!BUILD_PATH) console.log("Error getting the build path.");
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: false}));
 
 http.createServer(app).listen(HTTP_PORT);
 https.createServer(credentials, app).listen(HTTPS_PORT);
+
+console.log(`Listening on http port ${HTTP_PORT}, and https port ${HTTPS_PORT}`);
 
 app.use(express.static(BUILD_PATH));
 
 // app.listen(PORT, () => console.log(`Started listening on port ${PORT}`) );
 
-setInterval(() => {
-  http.get(`http://${process.env.PROJECT_DOMAIN}/api/ping`);
-}, 280000);
-
 
 app.get('/*', (req, res) => {
-
   // Redirect to https://
   res.sendFile(path.join(BUILD_PATH, "index.html"));
 });
@@ -120,7 +117,7 @@ function setStatus() {
 
 async function login() {
   await client
-    .login(process.env.TOKEN)
+    .login(token)
     .then(() => console.log(`Successfully logged in as ${client.user.tag}.`))
     .catch(err => console.log(`Couldn't log in! ${err}`));
   // Set up a thing to retry logging in up to 5 times before waiting for 15mins to 1hr
