@@ -13,11 +13,13 @@ BEGIN EXPRESS ROUTING
 
 */
 
+// Get SSL cert credentials 
 const pfx = fs.readFileSync('keys/website.pfx');
 const passphrase = process.env.PASSPHRASE;
 
 const credentials = { pfx: pfx, passphrase: passphrase }
 
+// Get ports
 const HTTP_PORT = process.env.HTTP_PORT || process.env.FALLBACK_PORT;
 const HTTPS_PORT = process.env.HTTPS_PORT || process.env.FALLBACK_PORT + 1;
 
@@ -37,18 +39,18 @@ app.use('/api/ping/', require('./routes/api/ping'));
 const BUILD_PATH = process.env.BUILD_PATH;
 if (!BUILD_PATH) console.log("Error getting the build path.");
 
+// ???
 app.use(express.json());
 app.use(express.urlencoded({ extended: false}));
 
+// Create HTTP/HTTPS servers and pass them as express middleware
 http.createServer(app).listen(HTTP_PORT);
 https.createServer(credentials, app).listen(HTTPS_PORT);
 
 console.log(`Listening on http port ${HTTP_PORT}, and https port ${HTTPS_PORT}`);
 
+// Serve static path (might want to remove this and render html pages)
 app.use(express.static(BUILD_PATH));
-
-// app.listen(PORT, () => console.log(`Started listening on port ${PORT}`) );
-
 
 app.get('/*', (req, res) => {
   // Redirect to https://
@@ -66,9 +68,11 @@ const ffmpeg = require("ffmpeg-static");
 const { prefix } = require("./config.json");
 const token = process.env.TOKEN;
 
+// Create Discord client
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
 
+// Create map of commands from their folders
 const commandFiles = fs
   .readdirSync("./commands")
   .filter(file => file.endsWith(".js"));
@@ -102,6 +106,8 @@ console.log(client.searchCommands, client.commands, searchIncludes);
 setStatus();
 login();
 
+
+// Sets the status of the bot in Discord
 function setStatus() {
   client.once("ready", () => {
     console.log("Client is ready!");
@@ -115,6 +121,7 @@ function setStatus() {
   });
 }
 
+// Uses the .env token as a login for the discord bot
 async function login() {
   await client
     .login(token)
@@ -123,11 +130,13 @@ async function login() {
   // Set up a thing to retry logging in up to 5 times before waiting for 15mins to 1hr
 }
 
+// Called whenever a message is sent
 client.on("message", async message => {
 
   const args = message.content.slice(prefix.length).split(" ");
   const command = args.shift().toLowerCase();
 
+  // Searches through map of 'search commands' to see if someone said a funny word
   function searchForCommand() {
     let didFind = false;
 
@@ -182,4 +191,9 @@ client.on("message", async message => {
     searchForCommand();
   }
 
+});
+
+// Called on websocket error
+client.on('shardError', error => {
+  console.error('A websocket connection encountered an error:', error);
 });
