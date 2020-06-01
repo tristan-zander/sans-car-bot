@@ -1,44 +1,69 @@
 const Discord = require('discord.js');
-const yas = require('youtube-audio-server');
-const isUrl = require('is-url');
+const ytdl = require('ytdl-core-discord');
+// const ytdl = require('ytdl-core');
+const isURL = require('is-url');
+const url = require('url');
 const fs = require('fs');
 
 module.exports = {
     name: 'play',
-    description: 'Play media from YouTube and Soundcloud',
+    description: 'Play media from YouTube or direct mp3 files',
     execute: async function (message, args) {
         if (message.member.voice.channel) {
+            // TODO set constants for info and the thumbnail for sending info back to the user
+            // TODO make a file that serves as a single instance that manages the guild's audio controls (queue and controls)
 
             // Check the args and check whether it is from youtube, soundcloud, or is a direct soundfile link
-            let urls = [];
+            getURL = () => {
+                // const httpRemover = /(^http:\/\/|^https:\/\/)w{1,3}./g;
 
-            for (const arg in args) {
-                if (isUrl(arg)) {
-                    urls.push(arg);
+                for (const arg of args) {
+                    if (isURL(arg)) { // The argument is a url
+                        //const newArg = arg.replace(httpRemover, '');
+                        return arg.trim();
+                    }
                 }
             }
 
 
-            // If you need to get a stream from youtube...
-            const YAS_PORT = process.env.YAS_PORT;
-            yas.setKey(process.env.YT_KEY);
-            yas.listen(YAS_PORT, console.log(`listening on port ${YAS_PORT}`));
-            // TODO make this its own separate server
+            async function getStream() {
+                const url = getURL();
+
+                if (url.includes('youtu')) {
+                    const str = await ytdl(url)
+                        .then((stream) => {
+                            return stream;
+                        });
+                    return str;
+                } else {
+                    return url;
+                }
+
+
+                return str;
+            }
 
             const connection = await message.member.voice.channel.join()
-                //.then(message.reply('Now playing: '))
+                .then(conn => module.exports.connection = conn)
                 .catch(err => {
                     message.reply('There was an error connecting to the voice channel.');
                     console.log(err);
                 });
 
-            const dispatcher = connection.play(urls.length === 1 ? urls[0] : 'audio.mp3');
+            // YTDL stream needs to get destroyed before leaving
+            const dispatcher = await getStream()
+                .then((stream) => {
+                    return connection.play(stream, { type: 'opus' })
+                })
+                .catch(err => console.log(err))
+
+
 
             if (dispatcher)
                 module.exports.dispatcher = dispatcher;
 
             dispatcher.on('start', () => {
-                console.log('audio.mp3 is now playing!');
+                console.log('The song is now playing!');
             });
 
             dispatcher.on('finish', () => {
@@ -52,7 +77,7 @@ module.exports = {
 
             dispatcher.on('warn', console.warn);
 
-            dispatcher.on('failed', err => console.log(err));
+            dispatcher.on('failed', err => { console.log(err); stream.destroy(); });
 
 
         } else {
