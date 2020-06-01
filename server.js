@@ -101,7 +101,7 @@ for (const file of searchCommands) {
 }
 
 console.log("Finished processing commands.");
-console.log(client.searchCommands, client.commands, searchIncludes);
+// console.log(client.searchCommands, client.commands, searchIncludes);
 
 setStatus();
 login();
@@ -156,7 +156,7 @@ client.on("message", async message => {
   // Async for taking out of a database in the future
   async function getCommand(commandName) {
     const promise = await client.commands.get(commandName);
-    console.log(promise);
+    // console.log(promise);
 
     return promise;
   }
