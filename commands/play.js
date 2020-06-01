@@ -1,21 +1,38 @@
 const Discord = require('discord.js');
-const ytSearch = require('youtube-search');
+const yas = require('youtube-audio-server');
+const isUrl = require('is-url');
 const fs = require('fs');
 
 module.exports = {
     name: 'play',
     description: 'Play media from YouTube and Soundcloud',
     execute: async function (message, args) {
-
         if (message.member.voice.channel) {
+
+            // Check the args and check whether it is from youtube, soundcloud, or is a direct soundfile link
+            let urls = [];
+
+            for (const arg in args) {
+                if (isUrl(arg)) {
+                    urls.push(arg);
+                }
+            }
+
+
+            // If you need to get a stream from youtube...
+            const YAS_PORT = process.env.YAS_PORT;
+            yas.setKey(process.env.YT_KEY);
+            yas.listen(YAS_PORT, console.log(`listening on port ${YAS_PORT}`));
+            // TODO make this its own separate server
+
             const connection = await message.member.voice.channel.join()
-                .then(message.reply('Now playing: '))
+                //.then(message.reply('Now playing: '))
                 .catch(err => {
-                    message.reply('There was an error playing your link.');
+                    message.reply('There was an error connecting to the voice channel.');
                     console.log(err);
                 });
 
-            const dispatcher = connection.play(args[0]);
+            const dispatcher = connection.play(urls.length === 1 ? urls[0] : 'audio.mp3');
 
             if (dispatcher)
                 module.exports.dispatcher = dispatcher;
