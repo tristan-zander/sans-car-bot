@@ -109,7 +109,8 @@ console.log("Finished processing commands.");
 setStatus();
 login();
 
-export const songManager = new PlayManager();
+const songManager = new PlayManager();
+module.exports.songManager = songManager;
 
 // Sets the status of the bot in Discord
 function setStatus() {
@@ -146,7 +147,7 @@ client.on("message", async message => {
 
     searchIncludes.forEach((search) => {
       search.includes.forEach((include) => {
-        if (message.toLowerCase().content.includes(include)) {
+        if (message.content.toLowerCase().includes(include)) {
           // Execute message
           search.command.execute(message, args);
           didFind = true;

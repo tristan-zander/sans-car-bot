@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -7,6 +8,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+Object.defineProperty(exports, "__esModule", { value: true });
+const PlayManager_1 = require("./audio-processing/PlayManager");
 const env = require('dotenv').config();
 const fs = require("fs");
 const http = require("http");
@@ -68,6 +71,8 @@ for (const file of searchCommands) {
 console.log("Finished processing commands.");
 setStatus();
 login();
+const songManager = new PlayManager_1.PlayManager();
+module.exports.songManager = songManager;
 function setStatus() {
     client.once("ready", () => {
         console.log("Client is ready!");
@@ -88,14 +93,14 @@ function login() {
             .catch(err => console.log(`Couldn't log in! ${err}`));
     });
 }
-client.on("message", (message) => __awaiter(this, void 0, void 0, function* () {
+client.on("message", (message) => __awaiter(void 0, void 0, void 0, function* () {
     const args = message.content.slice(prefix.length).split(" ");
     const command = args.shift().toLowerCase();
     function searchForCommand() {
         let didFind = false;
         searchIncludes.forEach((search) => {
             search.includes.forEach((include) => {
-                if (message.toLowerCase().content.includes(include)) {
+                if (message.content.toLowerCase().includes(include)) {
                     search.command.execute(message, args);
                     didFind = true;
                 }
