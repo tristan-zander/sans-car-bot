@@ -8,6 +8,8 @@
     },
     "files": [
         "server.ts",
-        "./audio-processing/PlayManager.ts"
+        "./audio-processing/PlayManager.ts",
+        "./audio-processing/Queue.ts",
+        "./audio-processing/MusicPlayer.ts"
     ]
 }

@@ -1,4 +1,4 @@
-import { PlayManager, MusicPlayer } from "./audio-processing/PlayManager";
+import { PlayManager } from "./audio-processing/PlayManager";
 
 const env = require('dotenv').config();
 const fs = require("fs");

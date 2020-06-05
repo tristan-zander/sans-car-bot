@@ -1,3 +1,5 @@
+import { MusicPlayer } from './MusicPlayer';
+
 // Manages all functions related to playing audio through vcs in a guild
 // Put a single instance of this as an export in server.js
 // Call this class and then send a message after the promise is resolved 
@@ -9,7 +11,7 @@ const fs = require('fs');
 
 export class PlayManager {
 
-    activeMusicPlayers = {};
+    activeMusicPlayers;
 
     constructor() {
         this.activeMusicPlayers = {};
@@ -35,12 +37,21 @@ export class PlayManager {
             function getURL() {
                 // const httpRemover = /(^http:\/\/|^https:\/\/)w{1,3}./g;
 
+                console.log(args)
+
+                if (!args[0]) {
+                    message.reply('You must provide a url for sans to play anything.');
+                    throw 'url not provided in play function';
+                }
+
                 for (const arg of args) {
-                    if (isURL(arg)) { // The argument is a url
-                        //const newArg = arg.replace(httpRemover, '');
+                    if (isURL(arg)) {
+                        // The argument is a url
                         return arg.trim();
                     }
                 }
+
+                // TODO Search for the relavent video on youtube
             }
 
 
@@ -87,6 +98,7 @@ export class PlayManager {
         if (player) {
             player.stop();
         } else {
+            message.reply(`Sans isn't playing anything.`);
             console.error('No player found to stop.');
         }
     }
@@ -109,93 +121,4 @@ export class PlayManager {
     queue = async (message, args) => {
         // Queue up songs (store their names into a database when necessary?)
     }
-}
-
-export class MusicPlayer {
-    // One given to every guild to manage audio
-    // Stores queue, song, dispatcher, connection, and information on who played the song
-
-    parent
-
-    dispatcher;
-    connection;
-
-    channel; // typeof VoiceChannel
-
-    queue: Queue;
-
-    isPlaying: boolean;
-
-    constructor(parent) {
-        this.queue = new Queue();
-
-        this.isPlaying = false;
-
-        this.parent = parent;
-    }
-
-    play = async (stream, vc) => {
-        this.connection = await vc.join()
-            .then(conn => conn)
-            .catch(err => {
-                // message.reply('There was an error connecting to the voice channel.');
-                console.log(err);
-                throw 'There was an error connecting to the voice channel.';
-            });
-
-        this.dispatcher = this.connection.play(stream, { type: 'opus' });
-
-        this.dispatcher.on('start', () => {
-            console.log('The song is now playing!');
-            this.isPlaying = true;
-        });
-
-        this.dispatcher.on('finish', () => {
-            // Clean up dispatcher and disconnect
-            this.isPlaying = false;
-        });
-
-        // handle errors appropriately
-        this.dispatcher.on('error', err => { console.error(err); this.destroy() } );
-
-        this.dispatcher.on('debug', console.debug);
-
-        this.dispatcher.on('warn', console.warn);
-
-        this.dispatcher.on('failed', err => {
-            console.log(err);
-            this.dispatcher.destroy();
-        });
-
-    }
-
-    stop = async () => {
-
-    }
-
-
-    dc = async () => {
-        if (this.dispatcher) {
-            this.dispatcher.destroy();
-        }
-
-        if (this.connection) {
-            this.connection.disconnect();
-        }
-
-        if (!this.connection) {
-            throw 'Sans is not in a voice channel';
-        }
-
-        this.destroy()
-    }
-
-    destroy = () => {
-        this.isPlaying = false;
-        this.parent.destroyChild();
-    }
-}
-
-export class Queue {
-    // Is the queue. String of URLs with functions to add and remove, as well as to display what is in the queue
 }
