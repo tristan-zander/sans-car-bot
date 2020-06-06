@@ -1,16 +1,8 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.songManager = void 0;
 const PlayManager_1 = require("./audio-processing/PlayManager");
-const env = require('dotenv').config();
+require('dotenv').config();
 const fs = require("fs");
 const http = require("http");
 const https = require("https");
@@ -71,8 +63,9 @@ for (const file of searchCommands) {
 console.log("Finished processing commands.");
 setStatus();
 login();
-const songManager = new PlayManager_1.PlayManager();
-module.exports.songManager = songManager;
+exports.songManager = new PlayManager_1.PlayManager;
+console.log(exports.songManager);
+module.exports.songManager = exports.songManager;
 function setStatus() {
     client.once("ready", () => {
         console.log("Client is ready!");
@@ -85,15 +78,13 @@ function setStatus() {
         });
     });
 }
-function login() {
-    return __awaiter(this, void 0, void 0, function* () {
-        yield client
-            .login(token)
-            .then(() => console.log(`Successfully logged in as ${client.user.tag}.`))
-            .catch(err => console.log(`Couldn't log in! ${err}`));
-    });
+async function login() {
+    await client
+        .login(token)
+        .then(() => console.log(`Successfully logged in as ${client.user.tag}.`))
+        .catch(err => console.log(`Couldn't log in! ${err}`));
 }
-client.on("message", (message) => __awaiter(void 0, void 0, void 0, function* () {
+client.on("message", async (message) => {
     const args = message.content.slice(prefix.length).split(" ");
     const command = args.shift().toLowerCase();
     function searchForCommand() {
@@ -108,11 +99,9 @@ client.on("message", (message) => __awaiter(void 0, void 0, void 0, function* ()
         });
         return didFind;
     }
-    function getCommand(commandName) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const promise = yield client.commands.get(commandName);
-            return promise;
-        });
+    async function getCommand(commandName) {
+        const promise = await client.commands.get(commandName);
+        return promise;
     }
     if (message.content.toLowerCase().startsWith(prefix)) {
         if (!client.commands.has(command)) {
@@ -131,9 +120,14 @@ client.on("message", (message) => __awaiter(void 0, void 0, void 0, function* ()
         }
     }
     else {
-        searchForCommand();
+        try {
+            searchForCommand();
+        }
+        catch (err) {
+            console.error(err);
+        }
     }
-}));
+});
 client.on('shardError', error => {
     console.error('A websocket connection encountered an error:', error);
 });

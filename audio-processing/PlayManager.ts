@@ -19,6 +19,11 @@ export class PlayManager {
 
     destroyChild = (child) => {
         // Destroy an instance of a music player and remove it from this.activeMusicPlayers
+
+        if (!child) {
+            throw 'No child given in PlayManager.destroyChild';
+        }
+
     }
 
     play = async (message, args) => {
@@ -36,8 +41,6 @@ export class PlayManager {
             // Check the args and check whether it is from youtube, soundcloud, or is a direct soundfile link
             function getURL() {
                 // const httpRemover = /(^http:\/\/|^https:\/\/)w{1,3}./g;
-
-                console.log(args)
 
                 if (!args[0]) {
                     message.reply('You must provide a url for sans to play anything.');

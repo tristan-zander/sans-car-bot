@@ -11,9 +11,11 @@ export class MusicPlayer {
 
     channel; // typeof VoiceChannel
 
-    queue: Queue;
+    queue;
 
-    isPlaying: boolean;
+    isPlaying;
+
+    timeoutTime;
 
     constructor(parent) {
         this.queue = new Queue();
@@ -21,6 +23,8 @@ export class MusicPlayer {
         this.isPlaying = false;
 
         this.parent = parent;
+
+        this.timeoutTime = 10 * 60 * 1000;
     }
 
     play = async (stream, vc) => {
@@ -41,7 +45,8 @@ export class MusicPlayer {
 
         this.dispatcher.on('finish', () => {
             // Clean up dispatcher and disconnect
-            this.destroy();
+
+            this.startTimeout();
         });
 
         // handle errors appropriately
@@ -59,7 +64,12 @@ export class MusicPlayer {
     }
 
     stop = async () => {
+        if (this.dispatcher) {
+            this.dispatcher.destroy();
+        }
 
+        // empty queue
+        this.queue.empty();
     }
 
 
@@ -81,6 +91,16 @@ export class MusicPlayer {
 
     destroy = () => {
         this.isPlaying = false;
-        this.parent.destroyChild();
+        this.parent.destroyChild(this);
+    }
+
+    startTimeout = () => {
+        setTimeout(() => this.timeout(), this.timeoutTime);
+    }
+
+    timeout = () => {
+        if (!this.isPlaying) {
+            this.destroy();
+        }
     }
 }

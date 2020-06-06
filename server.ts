@@ -1,6 +1,6 @@
-import { PlayManager } from "./audio-processing/PlayManager";
+import { PlayManager } from './audio-processing/PlayManager';
 
-const env = require('dotenv').config();
+require('dotenv').config();
 const fs = require("fs");
 const http = require("http");
 const https = require("https");
@@ -10,10 +10,10 @@ const path = require('path');
 
 
 /*
-
+ 
 BEGIN EXPRESS ROUTING
 Split this into a different program
-
+ 
 */
 
 // Get SSL cert credentials 
@@ -44,7 +44,7 @@ if (!BUILD_PATH) console.log("Error getting the build path.");
 
 // ???
 app.use(express.json());
-app.use(express.urlencoded({ extended: false}));
+app.use(express.urlencoded({ extended: false }));
 
 // Create HTTP/HTTPS servers and pass them as express middleware
 http.createServer(app).listen(HTTP_PORT);
@@ -109,7 +109,8 @@ console.log("Finished processing commands.");
 setStatus();
 login();
 
-const songManager = new PlayManager();
+export const songManager = new PlayManager;
+console.log(songManager)
 module.exports.songManager = songManager;
 
 // Sets the status of the bot in Discord
@@ -159,7 +160,7 @@ client.on("message", async message => {
   }
 
   // Async for taking out of a database in the future
-  async function getCommand(commandName: string) {
+  async function getCommand(commandName) {
     const promise = await client.commands.get(commandName);
     // console.log(promise);
 
@@ -193,7 +194,12 @@ client.on("message", async message => {
       message.reply("There was an error trying to execute this command.");
     }
   } else {
-    searchForCommand();
+    try {
+      searchForCommand();
+    }
+    catch (err) {
+      console.error(err);
+    }
   }
 
 });
