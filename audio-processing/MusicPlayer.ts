@@ -73,7 +73,7 @@ export class MusicPlayer {
     }
 
 
-    dc = async () => {
+    leaveVoiceChannel = async () => {
         if (this.dispatcher) {
             this.dispatcher.destroy();
         }

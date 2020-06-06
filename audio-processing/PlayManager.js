@@ -9,9 +9,20 @@ const fs = require('fs');
 class PlayManager {
     constructor() {
         this.destroyChild = (child) => {
+            console.log(this.activeMusicPlayers);
             if (!child) {
                 throw 'No child given in PlayManager.destroyChild';
             }
+            else {
+                if (this.activeMusicPlayers[child.connection.channel.guild.id]) {
+                    delete this.activeMusicPlayers[child.connection.channel.guild.id];
+                    console.log('Deleted music player in guild ' + child.connection.channel.guild.id);
+                }
+                else {
+                    console.log('Cannot find music player.');
+                }
+            }
+            console.log(this.activeMusicPlayers);
         };
         this.play = async (message, args) => {
             if (this.activeMusicPlayers[message.guild.id]) {
@@ -63,7 +74,7 @@ class PlayManager {
         this.dc = async (message, args) => {
             const player = this.activeMusicPlayers[message.guild.id];
             if (player) {
-                player.dc();
+                player.leaveVoiceChannel();
             }
             else {
                 console.error('No player found to disconnect.');

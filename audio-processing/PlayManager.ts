@@ -22,8 +22,14 @@ export class PlayManager {
 
         if (!child) {
             throw 'No child given in PlayManager.destroyChild';
+        } else {
+            if (this.activeMusicPlayers[child.connection.channel.guild.id]) {
+                delete this.activeMusicPlayers[child.connection.channel.guild.id];
+                console.log('Deleted music player in guild ' + child.connection.channel.guild.id);
+            } else {
+                console.log('Cannot find music player.');
+            }
         }
-
     }
 
     play = async (message, args) => {
@@ -111,7 +117,7 @@ export class PlayManager {
         const player = this.activeMusicPlayers[message.guild.id];
 
         if (player) {
-            player.dc();
+            player.leaveVoiceChannel();
         } else {
             console.error('No player found to disconnect.');
         }

@@ -33,7 +33,7 @@ class MusicPlayer {
             }
             this.queue.empty();
         };
-        this.dc = async () => {
+        this.leaveVoiceChannel = async () => {
             if (this.dispatcher) {
                 this.dispatcher.destroy();
             }
