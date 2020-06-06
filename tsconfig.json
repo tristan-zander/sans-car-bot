@@ -1,0 +1,23 @@
+{
+    "compileOnSave": true,
+    "compilerOptions": {
+        "target": "esnext",
+        "removeComments": true,
+        "module": "CommonJS",
+        "moduleResolution": "node",
+        "allowJs": true,
+        "types": [
+            "node"
+        ],
+        "sourceMap": true
+        },
+    "files": [
+        "server.ts",
+        "./audio-processing/PlayManager.ts",
+        "./audio-processing/Queue.ts",
+        "./audio-processing/MusicPlayer.ts"
+    ],
+    "exclude": [
+        "./node_modules"
+    ]
+}

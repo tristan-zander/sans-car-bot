@@ -53,7 +53,7 @@ module.exports = {
 
     const fields = { prefFields, noPrefFields };
 
-    console.log({ fields, prefFields, noPrefFields });
+    // console.log({ fields, prefFields, noPrefFields });
 
     const reply = new Discord.MessageEmbed()
       .setColor("#0099ff")
@@ -69,7 +69,7 @@ module.exports = {
         /*{ name: 'Regular field title', value: 'Some value here' },
                         { name: 'Inline field title', value: 'Some value here', inline: true },
                         { name: 'Inline field title', value: 'Some value here', inline: true },*/
-        { name: 'Prefix Commands', value: 'Called whenever someone uses "sans COMMAND_NAME" at the beginning of a message' },
+        { name: 'Prefix Commands', value: 'Use "**sans** *command*"' },
         fields.prefFields,
         { name: "\u200B", value: "\u200B" },
         { name: 'No Prefix Commands', value: 'Called whenever the specified phrases are at any point in a message' },

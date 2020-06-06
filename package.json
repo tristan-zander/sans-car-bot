@@ -1,34 +1,37 @@
 {
-  "//1": "describes your app and its dependencies",
-  "//2": "https://docs.npmjs.com/files/package.json",
-  "//3": "updating this file will download and update your packages",
   "name": "sanscarbot",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "It's literally a bot that posts the picture of sans car as soon as you say it",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "tsc && node server.js",
+    "dev": "tsc && nodemon server.js"
   },
   "dependencies": {
     "@discordjs/opus": "^0.1.0",
+    "@types/node": "^14.0.11",
     "crypto": "^1.0.1",
     "discord.js": "^12.2.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "ffmpeg-static": "^4.2.1"
+    "ffmpeg-static": "^4.2.2",
+    "is-url": "^1.2.4",
+    "sodium": "^3.0.2",
+    "youtube-search": "^1.1.4",
+    "ytdl-core-discord": "^1.2.0"
   },
   "engines": {
-    "node": "12.10.0"
+    "node": "14.4.0"
   },
   "repository": {
-    "url": "https://glitch.com/edit/#!/hello-express"
+    "url": "https://github.com/GalestrikeTTV/sans-car-bot"
   },
   "author": "Galestrike",
   "license": "MIT",
   "keywords": [
     "node",
-    "glitch",
+    "discord",
     "express"
   ]
 }
