@@ -9,7 +9,6 @@ const fs = require('fs');
 class PlayManager {
     constructor() {
         this.destroyChild = (child) => {
-            console.log(this.activeMusicPlayers);
             if (!child) {
                 throw 'No child given in PlayManager.destroyChild';
             }
@@ -22,7 +21,6 @@ class PlayManager {
                     console.log('Cannot find music player.');
                 }
             }
-            console.log(this.activeMusicPlayers);
         };
         this.play = async (message, args) => {
             if (this.activeMusicPlayers[message.guild.id]) {
