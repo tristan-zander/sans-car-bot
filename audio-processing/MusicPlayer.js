@@ -64,3 +64,4 @@ class MusicPlayer {
     }
 }
 exports.MusicPlayer = MusicPlayer;
+//# sourceMappingURL=MusicPlayer.js.map

@@ -110,7 +110,6 @@ setStatus();
 login();
 
 export const songManager = new PlayManager;
-console.log(songManager)
 module.exports.songManager = songManager;
 
 // Sets the status of the bot in Discord

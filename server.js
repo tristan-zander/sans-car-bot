@@ -64,7 +64,6 @@ console.log("Finished processing commands.");
 setStatus();
 login();
 exports.songManager = new PlayManager_1.PlayManager;
-console.log(exports.songManager);
 module.exports.songManager = exports.songManager;
 function setStatus() {
     client.once("ready", () => {
@@ -131,3 +130,4 @@ client.on("message", async (message) => {
 client.on('shardError', error => {
     console.error('A websocket connection encountered an error:', error);
 });
+//# sourceMappingURL=server.js.map
