@@ -24,7 +24,7 @@ export class MusicPlayer {
 
         this.parent = parent;
 
-        this.timeoutTime = 10 * 60 * 1000;
+        this.timeoutTime = 10 * 60  * 1000;
     }
 
     play = async (stream, vc) => {
@@ -46,11 +46,12 @@ export class MusicPlayer {
         this.dispatcher.on('finish', () => {
             // Clean up dispatcher and disconnect
 
+            this.isPlaying = false;
             this.startTimeout();
         });
 
         // handle errors appropriately
-        this.dispatcher.on('error', err => { console.error(err); this.destroy() } );
+        this.dispatcher.on('error', err => { console.error(err); this.destroy() });
 
         this.dispatcher.on('debug', console.debug);
 
@@ -58,7 +59,10 @@ export class MusicPlayer {
 
         this.dispatcher.on('failed', err => {
             console.log(err);
-            this.dispatcher.destroy();
+            this.leaveVoiceChannel()
+                .then(() => {
+                    throw 'The music player has failed for some reason. Contact the developer if this continues to happen.'
+                });
         });
 
     }
@@ -95,12 +99,11 @@ export class MusicPlayer {
     }
 
     startTimeout = () => {
-        setTimeout(() => this.timeout(), this.timeoutTime);
-    }
-
-    timeout = () => {
-        if (!this.isPlaying) {
-            this.destroy();
-        }
+        setTimeout(() => {
+            if (!this.isPlaying) {
+                this.destroy();
+            }
+        },
+            this.timeoutTime);
     }
 }

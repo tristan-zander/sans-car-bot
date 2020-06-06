@@ -17,6 +17,7 @@ class MusicPlayer {
                 this.isPlaying = true;
             });
             this.dispatcher.on('finish', () => {
+                this.isPlaying = false;
                 this.startTimeout();
             });
             this.dispatcher.on('error', err => { console.error(err); this.destroy(); });
@@ -24,7 +25,10 @@ class MusicPlayer {
             this.dispatcher.on('warn', console.warn);
             this.dispatcher.on('failed', err => {
                 console.log(err);
-                this.dispatcher.destroy();
+                this.leaveVoiceChannel()
+                    .then(() => {
+                    throw 'The music player has failed for some reason. Contact the developer if this continues to happen.';
+                });
             });
         };
         this.stop = async () => {
@@ -50,12 +54,11 @@ class MusicPlayer {
             this.parent.destroyChild(this);
         };
         this.startTimeout = () => {
-            setTimeout(() => this.timeout(), this.timeoutTime);
-        };
-        this.timeout = () => {
-            if (!this.isPlaying) {
-                this.destroy();
-            }
+            setTimeout(() => {
+                if (!this.isPlaying) {
+                    this.destroy();
+                }
+            }, this.timeoutTime);
         };
         this.queue = new Queue_1.Queue();
         this.isPlaying = false;
