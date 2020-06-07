@@ -36,6 +36,7 @@ class MusicPlayer {
                 this.dispatcher.destroy();
             }
             this.queue.empty();
+            this.startTimeout();
         };
         this.leaveVoiceChannel = async () => {
             if (this.dispatcher) {
@@ -51,6 +52,9 @@ class MusicPlayer {
         };
         this.destroy = () => {
             this.isPlaying = false;
+            if (this.connection) {
+                this.connection.disconnect();
+            }
             this.parent.destroyChild(this);
         };
         this.startTimeout = () => {
