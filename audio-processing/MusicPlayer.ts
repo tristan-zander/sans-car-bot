@@ -74,6 +74,8 @@ export class MusicPlayer {
 
         // empty queue
         this.queue.empty();
+
+        this.startTimeout();
     }
 
 
@@ -95,6 +97,11 @@ export class MusicPlayer {
 
     destroy = () => {
         this.isPlaying = false;
+
+        if (this.connection) {
+            this.connection.disconnect();
+        }
+
         this.parent.destroyChild(this);
     }
 
