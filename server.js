@@ -1,7 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.songManager = void 0;
-const PlayManager_1 = require("./audio-processing/PlayManager");
 require('dotenv').config();
 const fs = require("fs");
 const http = require("http");
@@ -9,11 +7,12 @@ const https = require("https");
 const express = require("express");
 const app = express();
 const path = require('path');
+const config = require('./config.json');
 const pfx = fs.readFileSync('keys/website.pfx');
 const passphrase = process.env.PASSPHRASE;
 const credentials = { pfx: pfx, passphrase: passphrase };
-const HTTP_PORT = process.env.HTTP_PORT || process.env.FALLBACK_PORT;
-const HTTPS_PORT = process.env.HTTPS_PORT || process.env.FALLBACK_PORT + 1;
+const HTTP_PORT = config.httpPort || config.fallbackPort;
+const HTTPS_PORT = config.httpsPort || config.fallbackPort + 1;
 app.use((req, res, next) => {
     if (req.secure) {
         next();
@@ -23,7 +22,7 @@ app.use((req, res, next) => {
     }
 });
 app.use('/api/ping/', require('./routes/api/ping'));
-const BUILD_PATH = process.env.BUILD_PATH;
+const BUILD_PATH = config.buildPath;
 if (!BUILD_PATH)
     console.log("Error getting the build path.");
 app.use(express.json());
@@ -37,7 +36,7 @@ app.get('/*', (req, res) => {
 });
 const Discord = require("discord.js");
 const ffmpeg = require("ffmpeg-static");
-const { prefix } = require("./config.json");
+const prefix = config.prefix;
 const token = process.env.TOKEN;
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
@@ -63,8 +62,6 @@ for (const file of searchCommands) {
 console.log("Finished processing commands.");
 setStatus();
 login();
-exports.songManager = new PlayManager_1.PlayManager;
-module.exports.songManager = exports.songManager;
 function setStatus() {
     client.once("ready", () => {
         console.log("Client is ready!");

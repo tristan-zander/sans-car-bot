@@ -7,24 +7,24 @@ const https = require("https");
 const express = require("express");
 const app = express();
 const path = require('path');
-
+const config = require('./config.json');
 
 /*
- 
+
 BEGIN EXPRESS ROUTING
 Split this into a different program
- 
+
 */
 
-// Get SSL cert credentials 
+// Get SSL cert credentials
 const pfx = fs.readFileSync('keys/website.pfx');
 const passphrase = process.env.PASSPHRASE;
 
 const credentials = { pfx: pfx, passphrase: passphrase }
 
 // Get ports
-const HTTP_PORT = process.env.HTTP_PORT || process.env.FALLBACK_PORT;
-const HTTPS_PORT = process.env.HTTPS_PORT || process.env.FALLBACK_PORT + 1;
+const HTTP_PORT = config.httpPort || config.fallbackPort;
+const HTTPS_PORT = config.httpsPort || config.fallbackPort + 1;
 
 // Make sure connection is https
 app.use((req, res, next) => {
@@ -39,7 +39,7 @@ app.use((req, res, next) => {
 app.use('/api/ping/', require('./routes/api/ping'));
 
 // Set static website path
-const BUILD_PATH = process.env.BUILD_PATH;
+const BUILD_PATH = config.buildPath;
 if (!BUILD_PATH) console.log("Error getting the build path.");
 
 // ???
@@ -61,14 +61,14 @@ app.get('/*', (req, res) => {
 });
 
 
-/* 
+/*
 
 BEGIN DISCORD BOT
 
 */
 const Discord = require("discord.js");
 const ffmpeg = require("ffmpeg-static");
-const { prefix } = require("./config.json");
+const prefix = config.prefix;
 const token = process.env.TOKEN;
 
 // Create Discord client
@@ -104,13 +104,10 @@ for (const file of searchCommands) {
 }
 
 console.log("Finished processing commands.");
-// console.log(client.searchCommands, client.commands, searchIncludes);
 
 setStatus();
 login();
 
-export const songManager = new PlayManager;
-module.exports.songManager = songManager;
 
 // Sets the status of the bot in Discord
 function setStatus() {
