@@ -10,10 +10,12 @@
       "node"
     ],
     "sourceMap": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "esModuleInterop": true
   },
   "files": [
     "server.ts",
+    "command.ts",
     "./audio-processing/PlayManager.ts",
     "./audio-processing/Queue.ts",
     "./audio-processing/MusicPlayer.ts"

@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js'
-import * as dotenv from 'dotenv'
+import dotenv from 'dotenv'
 import * as fs from 'fs'
 import PlayManager from './audio-processing/PlayManager'
 import {Command, SearchCommand} from './command'
@@ -7,7 +7,7 @@ import {Command, SearchCommand} from './command'
 // This might not even be necessary
 dotenv.config();
 
-const config = await import('./config.json');
+const config = require('./config.json');
 const prefix = config.prefix;
 const token = process.env.TOKEN;
 
