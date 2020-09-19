@@ -3,6 +3,9 @@ keys/
 *.pem
 *.pfx
 
+# TypeScript intermediary files
+*.js.map
+
 # Logs
 logs
 *.log

@@ -7,7 +7,7 @@ import {Command, SearchCommand} from './command'
 // This might not even be necessary
 dotenv.config();
 
-const config = require('./config.json');
+const config = JSON.parse(fs.readFileSync('./config.json').toString())
 const prefix = config.prefix;
 const token = process.env.TOKEN;
 
@@ -22,7 +22,10 @@ for (const file of commandFiles) {
 import(`./commands/${file}`).then(command => {
     commands.set(command.name, command);
     console.log(`Added command of name ${command.name}`);
-  });
+  })
+    .catch(err => {
+        console.log(`Error setting command. Err: ${err}`);
+    })
 }
 
 // Map of search commands

@@ -2,7 +2,7 @@ import * as Discord from 'discord.js';
 import dotenv from 'dotenv';
 import * as fs from 'fs';
 dotenv.config();
-const config = require('./config.json');
+const config = JSON.parse(fs.readFileSync('./config.json').toString());
 const prefix = config.prefix;
 const token = process.env.TOKEN;
 const client = new Discord.Client();
@@ -12,6 +12,9 @@ for (const file of commandFiles) {
     import(`./commands/${file}`).then(command => {
         commands.set(command.name, command);
         console.log(`Added command of name ${command.name}`);
+    })
+        .catch(err => {
+        console.log(`Error setting command. Err: ${err}`);
     });
 }
 let searchCommands = new Discord.Collection();
