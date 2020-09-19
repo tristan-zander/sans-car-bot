@@ -1,106 +1,48 @@
-import { PlayManager } from './audio-processing/PlayManager';
+import * as Discord from 'discord.js'
+import * as dotenv from 'dotenv'
+import * as fs from 'fs'
+import PlayManager from './audio-processing/PlayManager'
+import {Command, SearchCommand} from './command'
 
-require('dotenv').config();
-const fs = require("fs");
-const http = require("http");
-const https = require("https");
-const express = require("express");
-const app = express();
-const path = require('path');
-const config = require('./config.json');
+// This might not even be necessary
+dotenv.config();
 
-/*
-
-BEGIN EXPRESS ROUTING
-Split this into a different program
-
-*/
-
-// Get SSL cert credentials
-const pfx = fs.readFileSync('keys/website.pfx');
-const passphrase = process.env.PASSPHRASE;
-
-const credentials = { pfx: pfx, passphrase: passphrase }
-
-// Get ports
-const HTTP_PORT = config.httpPort || config.fallbackPort;
-const HTTPS_PORT = config.httpsPort || config.fallbackPort + 1;
-
-// Make sure connection is https
-app.use((req, res, next) => {
-  if (req.secure) {
-    next();
-  } else {
-    res.redirect('https://' + req.headers.host + req.url);
-  }
-});
-
-// Enable Ping api
-app.use('/api/ping/', require('./routes/api/ping'));
-
-// Set static website path
-const BUILD_PATH = config.buildPath;
-if (!BUILD_PATH) console.log("Error getting the build path.");
-
-// ???
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-
-// Create HTTP/HTTPS servers and pass them as express middleware
-http.createServer(app).listen(HTTP_PORT);
-https.createServer(credentials, app).listen(HTTPS_PORT);
-
-console.log(`Listening on http port ${HTTP_PORT}, and https port ${HTTPS_PORT}`);
-
-// Serve static path (might want to remove this and render html pages)
-app.use(express.static(BUILD_PATH));
-
-app.get('/*', (req, res) => {
-  // Redirect to https://
-  res.sendFile(path.join(BUILD_PATH, "index.html"));
-});
-
-
-/*
-
-BEGIN DISCORD BOT
-
-*/
-const Discord = require("discord.js");
-const ffmpeg = require("ffmpeg-static");
+const config = await import('./config.json');
 const prefix = config.prefix;
 const token = process.env.TOKEN;
 
 // Create Discord client
 const client = new Discord.Client();
-client.commands = new Discord.Collection();
+let commands: Discord.Collection<string, Command> = new Discord.Collection();
 
 // Create map of commands from their folders
-const commandFiles = fs
-  .readdirSync("./commands")
-  .filter(file => file.endsWith(".js"));
-
+const commandFiles =
+    fs.readdirSync("./commands").filter(file => file.endsWith(".js"));
 for (const file of commandFiles) {
-  const command = require(`./commands/${file}`);
-  client.commands.set(command.name, command);
-
-  console.log(`Added command of name ${command.name}`);
+import(`./commands/${file}`).then(command => {
+    commands.set(command.name, command);
+    console.log(`Added command of name ${command.name}`);
+  });
 }
 
-client.searchCommands = new Discord.Collection();
-const searchCommands = fs
-  .readdirSync('./no-pref-commands')
-  .filter((file) => file.endsWith('.js'));
+// Map of search commands
+let searchCommands: Discord.Collection<string, SearchCommand> =
+    new Discord.Collection();
+const searchFiles =
+    fs.readdirSync('./no-pref-commands').filter((file) => file.endsWith('.js'));
 
 let searchIncludes = [];
+for (const file of searchFiles) {
+import(`./no-pref-commands/${file}`).then(command => {
+    searchCommands.set(command.name, command);
 
-for (const file of searchCommands) {
-  const sCommand = require(`./no-pref-commands/${file}`);
-  client.searchCommands.set(sCommand.name, sCommand);
+    searchIncludes.push({includes : command.includes, command});
 
-  searchIncludes.push({ includes: sCommand.includes, command: sCommand });
-
-  console.log(`Added search command of name ${sCommand.name}`);
+    console.log(`Added search command of name ${command.name}`);
+  })
+    .catch(err => {
+        console.log(`Error setting command. Err: ${err}`)
+    })
 }
 
 console.log("Finished processing commands.");
@@ -108,59 +50,51 @@ console.log("Finished processing commands.");
 setStatus();
 login();
 
-
 // Sets the status of the bot in Discord
 function setStatus() {
   client.once("ready", () => {
     console.log("Client is ready!");
-    client.user.setPresence({
-      status: "online",
-      activity: {
-        name: 'use "sans help" for help',
-        type: "PLAYING"
-      }
-    });
+    client.user.setPresence(
+        {status : "online", activity : {name : 'undertale', type : "PLAYING"}});
   });
 }
 
 // Uses the .env token as a login for the discord bot
 async function login() {
-  await client
-    .login(token)
-    .then(() => console.log(`Successfully logged in as ${client.user.tag}.`))
-    .catch(err => console.log(`Couldn't log in! ${err}`));
-  // Set up a thing to retry logging in up to 5 times before waiting for 15mins to 1hr
+  await client.login(token)
+      .then(() => console.log(`Successfully logged in as ${client.user.tag}.`))
+      .catch(err => console.log(`Couldn't log in! ${err}`));
+  // Set up a thing to retry logging in up to 5 times before waiting for
+  // 15mins to 1hr
 }
 
 // Called whenever a message is sent
 client.on("message", async message => {
-
   const args = message.content.slice(prefix.length).split(" ");
   const command = args.shift().toLowerCase();
 
-  // Searches through map of 'search commands' to see if someone said a funny word
+  // Searches through map of 'search commands' to see if someone said a funny
+  // word
   function searchForCommand() {
     let didFind = false;
 
-    searchIncludes.forEach((search) => {
-      search.includes.forEach((include) => {
-        if (message.content.toLowerCase().includes(include)) {
-          // Execute message
-          search.command.execute(message, args);
-          didFind = true;
-        }
-      })
-    });
+    searchIncludes.forEach(
+        (search) => {search.includes.forEach((include) => {
+          if (message.content.toLowerCase().includes(include)) {
+            // Execute message
+            search.command.execute(message, args);
+            didFind = true;
+          }
+        })});
 
     return didFind;
   }
 
   // Async for taking out of a database in the future
-  async function getCommand(commandName) {
-    const promise = await client.commands.get(commandName);
-    // console.log(promise);
+  function getCommand(commandName: string) {
+    const comm: Command = commands.get(commandName);
 
-    return promise;
+    return comm
   }
 
   /*
@@ -173,18 +107,15 @@ client.on("message", async message => {
 
   // If it starts with a prefix
   if (message.content.toLowerCase().startsWith(prefix)) {
-    //console.log("command sent");
+    // console.log("command sent");
 
-    if (!client.commands.has(command)) {
+    if (!commands.has(command)) {
       message.reply(`'${command}' not found.`);
       return;
     }
 
     try {
-      getCommand(command)
-        .then((comm) => {
-          comm.execute(message, args);
-        });
+      getCommand(command).execute(message, args)
     } catch (error) {
       console.log(error);
       message.reply("There was an error trying to execute this command.");
@@ -192,12 +123,10 @@ client.on("message", async message => {
   } else {
     try {
       searchForCommand();
-    }
-    catch (err) {
+    } catch (err) {
       console.error(err);
     }
   }
-
 });
 
 // Called on websocket error

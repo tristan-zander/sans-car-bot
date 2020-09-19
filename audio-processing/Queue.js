@@ -1,19 +1,21 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 exports.Queue = void 0;
-class Queue {
-    constructor() {
-        this.empty = () => {
+var Queue = /** @class */ (function () {
+    function Queue() {
+        // Is the queue. String of URLs with functions to add and remove, as well as to display what is in the queue
+        this.empty = function () {
         };
-        this.add = (position) => {
+        this.add = function (position) {
         };
-        this.remove = (index) => {
+        this.remove = function (index) {
         };
-        this.getQueue = () => {
+        this.getQueue = function () {
         };
-        this.displayQueue = () => {
+        this.displayQueue = function () {
+            // returns embed with current queue
         };
     }
-}
+    return Queue;
+}());
 exports.Queue = Queue;
-//# sourceMappingURL=Queue.js.map

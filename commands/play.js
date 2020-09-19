@@ -5,10 +5,10 @@
 // const fs = require('fs');
 
 module.exports = {
-    name: 'play',
-    description: 'Play media from YouTube or direct mp3 files',
-    execute: async function (message, args) {
-        require('./../server').songManager.play(message, args);
-        //songManager.play(message, args);
-    }
+  name : 'play',
+  description : 'Play media from YouTube or direct mp3 files',
+  execute : async function(message, args) {
+    require('./../server').PlayManager.play(message, args)
+    // songManager.play(message, args);
+  }
 }
