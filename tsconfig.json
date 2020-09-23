@@ -1,4 +1,7 @@
 {
+  "include": [
+    "src/**/*"
+  ],
   "compileOnSave": true,
   "compilerOptions": {
     "target": "ESNext",
@@ -11,16 +14,14 @@
     ],
     "sourceMap": true,
     "resolveJsonModule": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "outDir": "./build",
+    "declaration": true,
+    "declarationDir": "./types",
+    "rootDir": "./src"
   },
-  "files": [
-    "server.ts",
-    "command.ts",
-    "./audio-processing/PlayManager.ts",
-    "./audio-processing/Queue.ts",
-    "./audio-processing/MusicPlayer.ts"
-  ],
   "exclude": [
-    "./node_modules"
+    "./node_modules",
+    "./build"
   ]
 }

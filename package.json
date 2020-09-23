@@ -2,16 +2,17 @@
   "name": "sanscarbot",
   "version": "1.1.0",
   "description": "It's literally a bot that posts the picture of sans car as soon as you say it",
-  "main": "server.js",
+  "main": "build/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "tsc && node server.js",
-    "dev": "tsc && nodemon server.js"
+    "start": "tsc && node build/server.js",
+    "dev": "tsc && nodemon build/server.js"
   },
   "type": "module",
   "dependencies": {
     "@discordjs/opus": "^0.1.0",
     "@types/node": "^14.6.0",
+    "bufferutil": "^4.0.1",
     "crypto": "^1.0.1",
     "discord.js": "^12.3.1",
     "dotenv": "^8.2.0",
@@ -19,6 +20,7 @@
     "ffmpeg-static": "^4.2.7",
     "is-url": "^1.2.4",
     "sodium": "^3.0.2",
+    "utf-8-validate": "^5.0.2",
     "youtube-search": "^1.1.4",
     "ytdl-core-discord": "^1.2.1"
   },
