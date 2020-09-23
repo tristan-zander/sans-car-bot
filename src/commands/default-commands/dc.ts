@@ -9,7 +9,8 @@ export class Disconnect implements Command {
   dependecies = [ Deps.Music ]
   music: SansMusic;
 
-  public constructor(music: SansMusic) { this.music = music; }
+  // TODO dependecy injection
+  public addMusicDependency() { throw "This is unimplemented!" }
 
   execute(message: SansMessage) {
     // this.music.disconnect(message.discord.guild.id)

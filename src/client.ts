@@ -17,6 +17,8 @@ export class SansClient {
   constructor(prefix: string, token: string) {
     this._client = new Discord.Client();
     this._musicManager = new SansMusic(this);
+    this._commands = new Map();
+    this._searchCommands = new Map();
     this._prefix = prefix;
     this._loginToken = token;
 
@@ -52,14 +54,17 @@ export class SansClient {
             .map(async file =>
                      await import(`./commands/default-commands/${file}`)
                          .catch(console.error));
-    let commands: Command[] = await Promise.all(files);
+    let commands = await Promise.all(files);
     commands.forEach(command => {
+      const {default : CommandClass} = command;
       if (!command) {
         // throw errors
       } else {
         // TODO loop through dependecies
-        console.log(`Adding command of name ${command.name}.`);
-        this._commands.set(command.name, command);
+        let comm = new CommandClass();
+
+        console.log(`Adding command of name ${comm.name}.`);
+        this._commands.set(comm.name, comm);
       }
     })
   }
