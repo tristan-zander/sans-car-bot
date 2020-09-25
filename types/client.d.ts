@@ -6,9 +6,10 @@ export declare class SansClient {
     private _searchCommands;
     private _musicManager;
     constructor(prefix: string, token: string);
-    setStatus(name: string): Promise<void>;
-    login(): Promise<void>;
+    setStatus(name: string): void;
+    login(): void;
     private generateCommands;
+    private handleReady;
     private handleMessage;
     private handleShardError;
 }

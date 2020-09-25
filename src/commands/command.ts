@@ -1,15 +1,22 @@
 import * as Discord from 'discord.js'
+import {MusicPlayer as MusicDep} from '../audio-processing/MusicPlayer.js'
 
 export enum SansDependencies {
   Music,
 }
 
+// Add each dependecy to this type
+export type SansDependencyReference = MusicDep;
+
 export interface Command {
   readonly name: string;
   readonly description: string;
   readonly dependecies?: SansDependencies[];
-  // Can throw exceptions
+
+  // Should throw exceptions on error
   execute: (message: SansMessage) => void;
+  // You NEED to type check in this function
+  addDeps?: (dep: SansDependencyReference) => void;
 }
 
 export interface SearchCommand {

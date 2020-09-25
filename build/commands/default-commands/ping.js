@@ -1,8 +1,9 @@
-module.exports = {
-    name: 'ping',
-    description: 'Responds with pong.',
-    execute(message, args) {
-        message.channel.send('Pong');
+export class Ping {
+    constructor() {
+        this.name = 'ping';
+        this.description = 'Responds with pong.';
     }
-};
+    execute(message) { message.discord.channel.send('Pong'); }
+}
+export default Ping;
 //# sourceMappingURL=ping.js.map

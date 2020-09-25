@@ -1,11 +1,11 @@
 import { SansDependencies as Deps } from '../command.js';
 export class Disconnect {
-    constructor(music) {
+    constructor() {
         this.name = 'dc';
         this.description = 'Disconnects the bot from the voice channel.';
         this.dependecies = [Deps.Music];
-        this.music = music;
     }
+    addDeps(dependecy) { this.music = dependecy; }
     execute(message) {
     }
 }

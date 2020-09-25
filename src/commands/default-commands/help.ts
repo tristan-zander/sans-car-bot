@@ -6,6 +6,9 @@ import {Command, SansMessage} from '../command.js'
 export class Help implements Command {
   name = 'help';
   description = 'Shows a list of commands.';
+
+  constructor() {}
+
   execute(message: SansMessage) {
     // args 0 is always the command name
     const commandFiles =

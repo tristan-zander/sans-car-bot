@@ -2,6 +2,7 @@ import * as Discord from 'discord.js';
 import * as fs from 'fs';
 import * as path from 'path';
 import { MusicPlayer as SansMusic } from './audio-processing/MusicPlayer.js';
+import { SansDependencies } from './commands/command.js';
 export class SansClient {
     constructor(prefix, token) {
         this._client = new Discord.Client();
@@ -10,40 +11,61 @@ export class SansClient {
         this._searchCommands = new Map();
         this._prefix = prefix;
         this._loginToken = token;
-        this._client.once("ready", () => {
-            console.log("Client is ready!");
-            this.setStatus("undertale").catch(console.error);
-        });
-        this._client.on('message', this.handleMessage);
-        this._client.on('shardError', this.handleShardError);
-        this.generateCommands().catch(console.error);
+        this._client.once("ready", this.handleReady.bind(this));
+        this._client.on('message', this.handleMessage.bind(this));
+        this._client.on('shardError', this.handleShardError.bind(this));
+        this.generateCommands().catch(console.error).then(() => { this.login(); });
     }
-    async setStatus(name) {
+    setStatus(name) {
         this._client.user
             .setPresence({ status: "online", activity: { name, type: "PLAYING" } })
-            .catch(err => { throw err; });
+            .catch(console.error);
     }
-    async login() {
-        await this._client.login(this._loginToken)
+    login() {
+        this._client.login(this._loginToken)
             .then(() => console.log(`Successfully logged in as ${this._client.user.tag}.`))
             .catch(err => { throw err; });
     }
     async generateCommands() {
-        const files = fs.readdirSync(path.resolve('build') + '/commands/default-commands/')
-            .filter(file => file.endsWith('.js'))
-            .map(async (file) => await import(`./commands/default-commands/${file}`)
-            .catch(console.error));
-        let commands = await Promise.all(files);
-        commands.forEach(command => {
-            const { default: commandClass } = command;
-            if (!command) {
-            }
-            else {
-                let comm = new commandClass();
-                console.log(`Adding command of name ${comm.name}.`);
-                this._commands.set(comm.name, comm);
-            }
-        });
+        {
+            const files = fs.readdirSync(path.resolve('build') + '/commands/default-commands/')
+                .filter(file => file.endsWith('.js'))
+                .map(async (file) => await import(`./commands/default-commands/${file}`)
+                .catch(console.error));
+            let commands = await Promise.all(files);
+            commands.forEach(command => {
+                const { default: CommandClass } = command;
+                if (!command) {
+                }
+                else {
+                    let comm = new CommandClass();
+                    if (comm.dependecies) {
+                        comm.dependecies.forEach((depReq) => {
+                            try {
+                                switch (depReq) {
+                                    case SansDependencies.Music:
+                                        comm.addDeps(this._musicManager);
+                                        break;
+                                    default:
+                                        console.error(`Dependency of name ${depReq} has not been implemented!`);
+                                        break;
+                                }
+                            }
+                            catch (err) {
+                                console.error(`Error setting dependency ${depReq} of command ${comm.name} err`);
+                            }
+                        });
+                    }
+                    console.log(`Adding command of name ${comm.name}.`);
+                    this._commands.set(comm.name, comm);
+                }
+            });
+        }
+        { }
+    }
+    handleReady() {
+        console.log("Client is ready!");
+        this.setStatus("undertale");
     }
     async handleMessage(message) {
         const args = message.content.slice(this._prefix.length).split(" ");

@@ -1,7 +1,10 @@
-import * as Discord from 'discord.js'
-
 import {MusicPlayer as SansMusic} from '../../audio-processing/MusicPlayer.js'
-import {Command, SansDependencies as Deps, SansMessage} from '../command.js'
+import {
+  Command,
+  SansDependencies as Deps,
+  SansDependencyReference,
+  SansMessage
+} from '../command.js'
 
 export class Disconnect implements Command {
   name = 'dc';
@@ -9,8 +12,10 @@ export class Disconnect implements Command {
   dependecies = [ Deps.Music ]
   music: SansMusic;
 
+  constructor() {}
+
   // TODO dependecy injection
-  public addMusicDependency() { throw "This is unimplemented!" }
+  public addDeps(dependecy: SansDependencyReference) { this.music = dependecy; }
 
   execute(message: SansMessage) {
     // this.music.disconnect(message.discord.guild.id)

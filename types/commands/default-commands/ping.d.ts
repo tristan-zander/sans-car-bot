@@ -1,4 +1,8 @@
-export const name: string;
-export const description: string;
-export function execute(message: any, args: any): void;
-export function execute(message: any, args: any): void;
+import { Command, SansMessage } from '../command.js';
+export declare class Ping implements Command {
+    name: string;
+    description: string;
+    constructor();
+    execute(message: SansMessage): void;
+}
+export default Ping;
