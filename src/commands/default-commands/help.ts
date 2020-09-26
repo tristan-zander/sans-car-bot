@@ -1,67 +1,123 @@
 import * as Discord from 'discord.js'
 import * as fs from 'fs'
+import * as path from 'path'
 
-import {Command, SansMessage} from '../command.js'
+import {
+  Command,
+  SansDependencies,
+  SansDependencyReference,
+  SansMessage,
+  SearchCommand
+} from '../command.js'
+
+export enum CommandType {
+  Standard = 0,
+  NoPrefix = 1
+}
+
+export class CommandDescription {
+  name: string;
+  description: string;
+  commandType: CommandType;
+
+  constructor(name: string, desc: string, commType: CommandType) {
+    this.name = name;
+    this.description = desc;
+    this.commandType = commType;
+  }
+}
 
 export class Help implements Command {
   name = 'help';
   description = 'Shows a list of commands.';
+  dependecies = [ SansDependencies.CommandDescriptions ];
+  private commandDescriptions: Map<string, CommandDescription>;
+  addDeps(dep: SansDependencyReference): void {
+    if (dep instanceof Map) {
+      this.commandDescriptions = dep;
+    } else {
+      console.error(`${this.name} was given the wrong dependency.`);
+    }
+  }
 
   constructor() {}
 
-  execute(message: SansMessage) {
-    // args 0 is always the command name
-    const commandFiles =
-        fs.readdirSync("./commands").filter(file => file.endsWith(".js"));
-    const noPrefixCommandFiles = fs.readdirSync("./no-pref-commands")
-                                     .filter(file => file.endsWith(".js"));
+  // TODO change this to be dependency injected with a list of command names so
+  // we only have to instantiate classes once
+  async execute(message: SansMessage): Promise<void> {
+    if (!this.commandDescriptions) {
+      throw `${this.name} was not given CommandDescriptions`;
+    }
 
-    // Prefix command formatting
-    const prefFields =
-        commandFiles
-            .map(file => {
-              const command = require(`../commands/${file}`);
-              if (command.name === undefined ||
-                  command.description === undefined)
-                return {name : "", value : ""};
-              if (command.hide === true) {
-                return {name : "", value : ""};
-              }
-              return {
-                name : command.name,
-                value : "`" + command.description + "`"
-              };
-            })
-            .filter(field => {
-              if (field.name === "null" || field.value === "null") {
-                return false;
-              } else {
-                return true;
-              }
-            });
+    let prefFields: {name: string, value: string}[] = new Array();
+    let noPrefFields: {name: string, value: string, inline: boolean}[] =
+        new Array();
 
-    // No prefix command formatting
-    const noPrefFields = noPrefixCommandFiles
-                             .map(file => {
-                               const command =
-                                   require(`../no-pref-commands/${file}`);
-                               if (command.name === undefined ||
-                                   command.description === undefined)
-                                 return {name : "", value : ""};
-                               return {
-                                 name : command.name,
-                                 value : "`" + command.description + "`",
-                               };
-                             })
-                             .filter(field => {
-                               if (field.name === "" && field.value === "") {
-                                 return false;
-                               } else {
-                                 return true;
-                               }
-                             });
+    this.commandDescriptions.forEach(desc => {
+      if (desc.commandType === CommandType.Standard) {
+        prefFields.push(
+            {name : `\`${desc.name}\``, value : `\`${desc.description}\``});
+      } else {
+        noPrefFields.push({
+          name : `\`${desc.name}\``,
+          value : `\`${desc.description}\``,
+          inline : true
+        });
+      }
+    });
 
-    const fields = {prefFields, noPrefFields};
+    /*
+  const commandDir = path.resolve("build/commands/");
+
+  const commandFiles =
+      fs.readdirSync(path.join(commandDir, 'default-commands/'))
+          .filter(file => file.endsWith(".js"));
+  const noPrefixCommandFiles =
+      fs.readdirSync(path.join(commandDir, 'no-pref-commands/'))
+          .filter(file => file.endsWith(".js"));
+
+  // Prefix command formatting
+  const prefFields = commandFiles.map(async file => {
+    const filePath = path.join(commandDir, 'default-commands/', file);
+    const {default : CommandClass}: {default: any|Command} =
+        await import(filePath).catch(err => {throw err});
+    if (CommandClass.name && CommandClass.description) {
+      return {
+        name: `\`${CommandClass.name}\``,
+            value: `\`${CommandClass.description}\``
+      }
+    } else {
+      console.error(
+          `Help.js; ${file} does not have fields for Help command.\nName: ${
+              CommandClass.name}, Description: ${CommandClass.description}`);
+      return {name : '', value : ''};
+    }
+  });
+
+  // No prefix command formatting
+  const noPrefFields = noPrefixCommandFiles.map(async file => {
+    const filePath = path.join(commandDir, 'no-pref-commands/', file);
+    const {default : CommandClass}: {default: any|SearchCommand} =
+        await import(filePath).catch(err => {throw err});
+    if (CommandClass.name && CommandClass.description) {
+      return {
+        name: `\`${CommandClass.name}\``,
+            value: `\`${CommandClass.description}\``
+      }
+    } else {
+      console.error(
+          `Help.js; ${file} does not have fields for Help command.\nName: ${
+              CommandClass.name}, Description ${CommandClass.description}`);
+      return {name : '', value : ''};
+    }
+  });
+
+  const fields = {
+    prefFields : await Promise.all(prefFields).catch(err => {throw err}),
+    noPrefFields : await Promise.all(noPrefFields).catch(err => {throw err})
+  }
+
+  */
 
     // console.log({ fields, prefFields, noPrefFields });
 
@@ -74,24 +130,19 @@ export class Help implements Command {
                 "Sans Bot",
                 "https://cdn.glitch.com/dbb9f570-9735-4542-ac26-1069d41fa06a%2Fsans-car-square.jpg?v=1589380617092",
                 "https://sanscar.net")
-            //.setDescription(`Here's a list of all commands.`)
-            .addFields(
-                /*{ name: 'Regular field title', value: 'Some value here' },
-                                { name: 'Inline field title', value: 'Some value
-                   here', inline: true }, { name: 'Inline field title', value:
-                   'Some value here', inline: true },*/
-                {name : 'Prefix Commands', value : 'Use "**sans** *command*"'},
-                // fields.prefFields
-                {name : "\u200B", value : "\u200B"}, {
-                  name : 'No Prefix Commands',
-                  value :
-                      'Called whenever the specified phrases are at any point in a message'
-                } /* ,fields.noPrefFields */)
-            //.addField('Inline field title', 'Some value here', true)
-            .setTimestamp()
-            .setFooter(
-                "Sans car",
-                "https://cdn.glitch.com/dbb9f570-9735-4542-ac26-1069d41fa06a%2Fsans-car-square.jpg?v=1589380617092");
+            .setDescription(`Here's a list of available commands.`)
+            .addField('Prefix Commands', 'Use "**sans** *command*"')
+            .addField("\u200B", "\u200B");
+    prefFields.forEach(field => {reply.addField(field.name, field.value)});
+    reply.addField("\u200B", "\u200B")
+        .addField(
+            'No Prefix Commands',
+            'Called whenever the specified phrases are at any point in a message');
+    noPrefFields.forEach(
+        field => { reply.addField(field.name, field.value, true); });
+    reply.setTimestamp().setFooter(
+        "Sans car",
+        "https://cdn.glitch.com/dbb9f570-9735-4542-ac26-1069d41fa06a%2Fsans-car-square.jpg?v=1589380617092");
 
     message.discord.channel.send(reply);
   }

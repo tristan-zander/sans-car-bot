@@ -7,7 +7,7 @@ export class Ping implements Command {
   constructor() {}
 
   // TODO Make this send network statistics too
-  execute(message: SansMessage) { message.discord.channel.send('Pong'); }
+  async execute(message: SansMessage) { message.discord.channel.send('Pong'); }
 }
 
 export default Ping;

@@ -3,6 +3,6 @@ export declare class Ping implements Command {
     name: string;
     description: string;
     constructor();
-    execute(message: SansMessage): void;
+    execute(message: SansMessage): Promise<void>;
 }
 export default Ping;

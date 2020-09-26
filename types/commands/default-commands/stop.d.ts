@@ -5,7 +5,7 @@ export declare class Stop implements Command {
     description: string;
     musicPlayer: SansMusic;
     constructor();
-    execute(message: SansMessage): void;
+    execute(message: SansMessage): Promise<void>;
     addDeps(dep: SansDependencyReference): void;
 }
 export default Stop;

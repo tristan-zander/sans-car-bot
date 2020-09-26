@@ -6,7 +6,7 @@ export declare class Play implements Command {
     dependecies: SansDependencies[];
     musicPlayer: SansMusic;
     constructor();
-    execute(message: SansMessage): void;
+    execute(message: SansMessage): Promise<void>;
     addDeps(dep: SansDependencyReference): void;
 }
 export default Play;

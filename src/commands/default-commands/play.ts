@@ -21,7 +21,7 @@ export class Play implements Command {
 
   constructor() {}
 
-  execute(message: SansMessage): void {
+  async execute(message: SansMessage): Promise<void> {
     if (!this.musicPlayer) {
       throw `Music Player has not been instantiated in command ${this.name}`
     } else {

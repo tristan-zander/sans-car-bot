@@ -1,67 +1,62 @@
 import * as Discord from 'discord.js';
-import * as fs from 'fs';
+import { SansDependencies } from '../command.js';
+export var CommandType;
+(function (CommandType) {
+    CommandType[CommandType["Standard"] = 0] = "Standard";
+    CommandType[CommandType["NoPrefix"] = 1] = "NoPrefix";
+})(CommandType || (CommandType = {}));
+export class CommandDescription {
+    constructor(name, desc, commType) {
+        this.name = name;
+        this.description = desc;
+        this.commandType = commType;
+    }
+}
 export class Help {
     constructor() {
         this.name = 'help';
         this.description = 'Shows a list of commands.';
+        this.dependecies = [SansDependencies.CommandDescriptions];
     }
-    execute(message) {
-        const commandFiles = fs.readdirSync("./commands").filter(file => file.endsWith(".js"));
-        const noPrefixCommandFiles = fs.readdirSync("./no-pref-commands")
-            .filter(file => file.endsWith(".js"));
-        const prefFields = commandFiles
-            .map(file => {
-            const command = require(`../commands/${file}`);
-            if (command.name === undefined ||
-                command.description === undefined)
-                return { name: "", value: "" };
-            if (command.hide === true) {
-                return { name: "", value: "" };
-            }
-            return {
-                name: command.name,
-                value: "`" + command.description + "`"
-            };
-        })
-            .filter(field => {
-            if (field.name === "null" || field.value === "null") {
-                return false;
+    addDeps(dep) {
+        if (dep instanceof Map) {
+            this.commandDescriptions = dep;
+        }
+        else {
+            console.error(`${this.name} was given the wrong dependency.`);
+        }
+    }
+    async execute(message) {
+        if (!this.commandDescriptions) {
+            throw `${this.name} was not given CommandDescriptions`;
+        }
+        let prefFields = new Array();
+        let noPrefFields = new Array();
+        this.commandDescriptions.forEach(desc => {
+            if (desc.commandType === CommandType.Standard) {
+                prefFields.push({ name: `\`${desc.name}\``, value: `\`${desc.description}\`` });
             }
             else {
-                return true;
+                noPrefFields.push({
+                    name: `\`${desc.name}\``,
+                    value: `\`${desc.description}\``,
+                    inline: true
+                });
             }
         });
-        const noPrefFields = noPrefixCommandFiles
-            .map(file => {
-            const command = require(`../no-pref-commands/${file}`);
-            if (command.name === undefined ||
-                command.description === undefined)
-                return { name: "", value: "" };
-            return {
-                name: command.name,
-                value: "`" + command.description + "`",
-            };
-        })
-            .filter(field => {
-            if (field.name === "" && field.value === "") {
-                return false;
-            }
-            else {
-                return true;
-            }
-        });
-        const fields = { prefFields, noPrefFields };
         const reply = new Discord.MessageEmbed()
             .setColor("#0099ff")
             .setTitle("Commands List")
             .setURL("https://sanscar.net")
             .setAuthor("Sans Bot", "https://cdn.glitch.com/dbb9f570-9735-4542-ac26-1069d41fa06a%2Fsans-car-square.jpg?v=1589380617092", "https://sanscar.net")
-            .addFields({ name: 'Prefix Commands', value: 'Use "**sans** *command*"' }, { name: "\u200B", value: "\u200B" }, {
-            name: 'No Prefix Commands',
-            value: 'Called whenever the specified phrases are at any point in a message'
-        })
-            .setTimestamp()
-            .setFooter("Sans car", "https://cdn.glitch.com/dbb9f570-9735-4542-ac26-1069d41fa06a%2Fsans-car-square.jpg?v=1589380617092");
+            .setDescription(`Here's a list of available commands.`)
+            .addField('Prefix Commands', 'Use "**sans** *command*"')
+            .addField("\u200B", "\u200B");
+        prefFields.forEach(field => { reply.addField(field.name, field.value); });
+        reply.addField("\u200B", "\u200B")
+            .addField('No Prefix Commands', 'Called whenever the specified phrases are at any point in a message');
+        noPrefFields.forEach(field => { reply.addField(field.name, field.value, true); });
+        reply.setTimestamp().setFooter("Sans car", "https://cdn.glitch.com/dbb9f570-9735-4542-ac26-1069d41fa06a%2Fsans-car-square.jpg?v=1589380617092");
         message.discord.channel.send(reply);
     }
 }

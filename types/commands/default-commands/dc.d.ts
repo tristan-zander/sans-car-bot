@@ -7,6 +7,6 @@ export declare class Disconnect implements Command {
     music: SansMusic;
     constructor();
     addDeps(dependecy: SansDependencyReference): void;
-    execute(message: SansMessage): void;
+    execute(message: SansMessage): Promise<void>;
 }
 export default Disconnect;

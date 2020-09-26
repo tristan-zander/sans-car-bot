@@ -4,7 +4,7 @@ export class Stop {
         this.name = 'stop';
         this.description = 'Stops audio.';
     }
-    execute(message) {
+    async execute(message) {
         if (!this.musicPlayer) {
             throw `Music Player has not been instantiated in command ${this.name}`;
         }

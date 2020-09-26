@@ -6,7 +6,7 @@ export class Play {
         this.description = 'Play media from YouTube or direct mp3 files';
         this.dependecies = [SansDependencies.Music];
     }
-    execute(message) {
+    async execute(message) {
         if (!this.musicPlayer) {
             throw `Music Player has not been instantiated in command ${this.name}`;
         }

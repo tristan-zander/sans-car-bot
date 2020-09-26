@@ -4,6 +4,6 @@ export declare class SansCar implements Command {
     description: string;
     hide: boolean;
     constructor();
-    execute(message: SansMessage): void;
+    execute(message: SansMessage): Promise<void>;
 }
 export default SansCar;

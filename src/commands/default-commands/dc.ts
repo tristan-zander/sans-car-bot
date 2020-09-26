@@ -15,9 +15,14 @@ export class Disconnect implements Command {
   constructor() {}
 
   // TODO dependecy injection
-  public addDeps(dependecy: SansDependencyReference) { this.music = dependecy; }
+  public addDeps(dependecy: SansDependencyReference) {
+    if (dependecy instanceof SansMusic)
+      this.music = dependecy;
+    else
+      console.error(`${this.name} was given the wrong dependecy.`);
+  }
 
-  execute(message: SansMessage) {
+  async execute(message: SansMessage) {
     // this.music.disconnect(message.discord.guild.id)
   }
 }

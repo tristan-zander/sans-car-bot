@@ -1,4 +1,8 @@
-export const name: string;
-export const description: string;
-export const includes: string[];
-export function execute(message: any, args: any): void;
+import { SansMessage, SearchCommand } from "../command.js";
+export declare class SansCarNoPrefix implements SearchCommand {
+    name: string;
+    description: string;
+    includes: string[];
+    execute(message: SansMessage): Promise<void>;
+}
+export default SansCarNoPrefix;

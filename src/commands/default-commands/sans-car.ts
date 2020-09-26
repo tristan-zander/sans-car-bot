@@ -12,7 +12,7 @@ export class SansCar implements Command {
 
   constructor() {}
 
-  execute(message: SansMessage) {
+  async execute(message: SansMessage): Promise<void> {
     const sanscar = new Discord.MessageAttachment(
         "https://cdn.glitch.com/dbb9f570-9735-4542-ac26-1069d41fa06a%2Fsanscar.jpg?v=1584324797279");
 

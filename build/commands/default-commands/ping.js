@@ -3,7 +3,7 @@ export class Ping {
         this.name = 'ping';
         this.description = 'Responds with pong.';
     }
-    execute(message) { message.discord.channel.send('Pong'); }
+    async execute(message) { message.discord.channel.send('Pong'); }
 }
 export default Ping;
 //# sourceMappingURL=ping.js.map

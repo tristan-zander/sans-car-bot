@@ -10,6 +10,10 @@ import {
   SansMessage,
   SearchCommand
 } from './commands/command.js'
+import {
+  CommandDescription,
+  CommandType
+} from './commands/default-commands/help.js'
 
 export class SansClient {
   private _client: Discord.Client;
@@ -18,11 +22,14 @@ export class SansClient {
   private _commands: Map<string, Command>;
   private _searchCommands: Map<string, SearchCommand>;
 
+  // Dependencies for injection
   private _musicManager: SansMusic;
+  private _commandDescriptions: Map<string, CommandDescription>;
 
   constructor(prefix: string, token: string) {
     this._client = new Discord.Client();
     this._musicManager = new SansMusic(this);
+    this._commandDescriptions = new Map();
     this._commands = new Map();
     this._searchCommands = new Map();
     this._prefix = prefix;
@@ -50,55 +57,103 @@ export class SansClient {
     // 15mins to 1hr
   }
 
+  private async importCommandsFromPath(pathStr: string):
+      Promise<Array<Command|SearchCommand>> {
+    const files =
+        fs.readdirSync(pathStr)
+            .filter(file => file.endsWith('.js'))
+            .map(async file => {
+              const {default : def}: {default: Command|SearchCommand} =
+                  await import(`${pathStr}/${file}`).catch(console.error);
+              return def;
+            });
+    return await Promise.all(files);
+  }
+
+  private resolveDependency(depReq: SansDependencies,
+                            comm: Command|SearchCommand) {
+    switch (depReq) {
+    case SansDependencies.Music:
+      comm.addDeps(this._musicManager);
+      break;
+
+    case SansDependencies.CommandDescriptions:
+      comm.addDeps(this._commandDescriptions);
+      break;
+
+    default:
+      console.error(`Dependency of name ${depReq} has not been implemented!`);
+      break;
+    }
+  }
+
   private async generateCommands() {
+    const commandDir = path.resolve("build/commands/");
+
     // Default Commands
     {
-      const files =
-          fs.readdirSync(path.resolve('build') + '/commands/default-commands/')
-              .filter(file => file.endsWith('.js'))
-              .map(async file =>
-                       await import(`./commands/default-commands/${file}`)
-                           .catch(console.error));
-      let commands = await Promise.all(files);
-      commands.forEach(command => {
-        const {default : CommandClass} = command;
-        if (!command) {
-          // throw errors
-        } else {
-          // I can't type annotate this for some reason. It throws a
-          // constructor error because Command has no constructor and
-          // Typescript doesn't allow for constructor definitions in
-          // interfaces
-          let comm = new CommandClass();
+      let commands = await this
+                         .importCommandsFromPath(
+                             path.join(commandDir, 'default-commands/'))
+                         .catch(err => {throw err});
+      commands.forEach((CommandClass: any|Command) => {
+        // I can't type annotate this for some reason. It throws a
+        // constructor error because Command has no constructor and
+        // Typescript doesn't allow for constructor definitions in
+        // interfaces
+        let comm = new CommandClass();
 
-          if (comm.dependecies) {
-            comm.dependecies.forEach((depReq: SansDependencies) => {
-              try {
-                switch (depReq) {
-                case SansDependencies.Music:
-                  comm.addDeps(this._musicManager);
-                  break;
-
-                default:
-                  console.error(
-                      `Dependency of name ${depReq} has not been implemented!`);
-                  break;
-                }
-              } catch (err) {
-                console.error(`Error setting dependency ${depReq} of command ${
-                    comm.name} err`)
-              }
-            });
-          }
-
-          console.log(`Adding command of name ${comm.name}.`);
-          this._commands.set(comm.name, comm);
+        if (comm.dependecies) {
+          comm.dependecies.forEach((depReq: SansDependencies) => {
+            try {
+              this.resolveDependency(depReq, comm);
+            } catch (err) {
+              console.error(`Error setting dependency ${depReq} of command ${
+                  comm.name} err`)
+            }
+          });
         }
-      })
+
+        console.log(`Adding command of name ${comm.name}.`);
+        this._commands.set(comm.name, comm);
+
+        const description = new CommandDescription(comm.name, comm.description,
+                                                   CommandType.Standard);
+        this._commandDescriptions.set(description.name, description);
+      });
     }
 
     // Search Commands
-    {}
+    {
+      const commands = await this
+                           .importCommandsFromPath(
+                               path.join(commandDir, 'no-pref-commands/'))
+                           .catch(err => { throw err; });
+      commands.forEach((SearchCommandClass: any|SearchCommand) => {
+        let classInstance = new SearchCommandClass();
+        // TODO it would be better if we looped and stored the include strings
+        // here instead of at every message
+
+        if (classInstance.dependecies) {
+          classInstance.dependecies.forEach((depReq: SansDependencies) => {
+            try {
+              this.resolveDependency(depReq, classInstance);
+            } catch (err) {
+              console.error(`Error setting dependency ${depReq} of command ${
+                  classInstance.name} err`)
+            }
+          });
+        }
+
+        console.log(`Adding search command of name ${classInstance.name}.`);
+        this._searchCommands.set(classInstance.name, classInstance);
+
+        const description = new CommandDescription(classInstance.name,
+                                                   classInstance.description,
+                                                   CommandType.NoPrefix);
+        this._commandDescriptions.set(description.name, description);
+      });
+    }
   }
 
   private handleReady() {
@@ -117,26 +172,20 @@ export class SansClient {
       const command = this._commands.get(comm);
 
       if (!command) {
-        message.reply(`'${command}' not found.`);
+        message.reply(`Command '${comm}' was not found.`);
         return;
       } else {
-        try {
-          command.execute(sansMessage);
-        } catch (err) {
+        await command.execute(sansMessage).catch(err => {
           console.error(err);
           message.reply(
               `There was an error trying to execute ${command.name}.`);
-        }
+        });
       }
     } else {
       this._searchCommands.forEach(searchComm => {
         searchComm.includes.forEach(include => {
           if (message.content.includes(include)) {
-            try {
-              searchComm.execute(sansMessage);
-            } catch (err) {
-              console.error(err);
-            }
+            searchComm.execute(sansMessage).catch(err => {console.error(err)});
           }
         });
       });
