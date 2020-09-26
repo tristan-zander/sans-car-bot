@@ -1,4 +1,5 @@
 import * as Discord from 'discord.js';
+import * as path from 'path';
 export class KyloRen {
     constructor() {
         this.name = 'kylo ren';
@@ -6,7 +7,7 @@ export class KyloRen {
         this.includes = ['bring me the girl', 'kylo ren'];
     }
     async execute(message) {
-        const bringMeTheGirl = new Discord.MessageAttachment("https://cdn.glitch.com/dbb9f570-9735-4542-ac26-1069d41fa06a%2Fbring%20me%20the%20girl.jpg?v=1584327058499");
+        const bringMeTheGirl = new Discord.MessageAttachment(path.resolve('res/bring-me-the-girl.png'));
         message.discord.channel.send(bringMeTheGirl);
     }
 }

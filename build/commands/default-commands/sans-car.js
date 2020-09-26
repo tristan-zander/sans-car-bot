@@ -1,4 +1,5 @@
 import * as Discord from 'discord.js';
+import * as path from 'path';
 export class SansCar {
     constructor() {
         this.name = 'car';
@@ -6,7 +7,7 @@ export class SansCar {
         this.hide = true;
     }
     async execute(message) {
-        const sanscar = new Discord.MessageAttachment("https://cdn.glitch.com/dbb9f570-9735-4542-ac26-1069d41fa06a%2Fsanscar.jpg?v=1584324797279");
+        const sanscar = new Discord.MessageAttachment(path.resolve("res/sans-car.jpg"));
         message.discord.channel.send(sanscar);
     }
 }

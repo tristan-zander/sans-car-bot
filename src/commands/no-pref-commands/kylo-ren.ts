@@ -1,4 +1,5 @@
 import * as Discord from 'discord.js'
+import * as path from 'path'
 
 import {SansMessage, SearchCommand} from '../command.js'
 
@@ -8,7 +9,7 @@ export class KyloRen implements SearchCommand {
   includes = [ 'bring me the girl', 'kylo ren' ];
   async execute(message: SansMessage): Promise<void> {
     const bringMeTheGirl = new Discord.MessageAttachment(
-        "https://cdn.glitch.com/dbb9f570-9735-4542-ac26-1069d41fa06a%2Fbring%20me%20the%20girl.jpg?v=1584327058499");
+        path.resolve('res/bring-me-the-girl.png'));
 
     message.discord.channel.send(bringMeTheGirl);
   }

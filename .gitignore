@@ -1,9 +1,4 @@
-# Certificates
-keys/
-*.pem
-*.pfx
-
-# TypeScript intermediary files
+# TypeScript intermediary files (always build the project first)
 *.js.map
 
 # Logs

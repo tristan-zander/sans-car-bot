@@ -1,7 +1,3 @@
 {
-    "prefix": "sans ",
-    "httpPort": 5030,
-    "httpsPort": 5000,
-    "fallbackPort": 3000,
-    "buildPath": "/home/gale/Repos/sans-car-website/sans-car-website/public"
+  "prefix": "sans "
 }

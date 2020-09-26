@@ -1,4 +1,5 @@
 import * as Discord from 'discord.js'
+import * as path from 'path'
 
 import {Command, SansMessage} from "../command.js";
 
@@ -13,9 +14,8 @@ export class SansCar implements Command {
   constructor() {}
 
   async execute(message: SansMessage): Promise<void> {
-    const sanscar = new Discord.MessageAttachment(
-        "https://cdn.glitch.com/dbb9f570-9735-4542-ac26-1069d41fa06a%2Fsanscar.jpg?v=1584324797279");
-
+    const sanscar =
+        new Discord.MessageAttachment(path.resolve("res/sans-car.jpg"));
     message.discord.channel.send(sanscar);
   }
 }

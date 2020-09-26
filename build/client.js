@@ -108,7 +108,7 @@ export class SansClient {
         if (message.content.toLowerCase().startsWith(this._prefix)) {
             const command = this._commands.get(comm);
             if (!command) {
-                message.reply(`'${comm}' not found.`);
+                message.reply(`Command '${comm}' was not found.`);
                 return;
             }
             else {

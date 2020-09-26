@@ -56,10 +56,10 @@ export class Help implements Command {
     this.commandDescriptions.forEach(desc => {
       if (desc.commandType === CommandType.Standard) {
         prefFields.push(
-            {name : `\`${desc.name}\``, value : `\`${desc.description}\``});
+            {name : `\*${desc.name}\*`, value : `\`${desc.description}\``});
       } else {
         noPrefFields.push({
-          name : `\`${desc.name}\``,
+          name : `\*${desc.name}\*`,
           value : `\`${desc.description}\``,
           inline : true
         });
@@ -130,9 +130,8 @@ export class Help implements Command {
                 "Sans Bot",
                 "https://cdn.glitch.com/dbb9f570-9735-4542-ac26-1069d41fa06a%2Fsans-car-square.jpg?v=1589380617092",
                 "https://sanscar.net")
-            .setDescription(`Here's a list of available commands.`)
-            .addField('Prefix Commands', 'Use "**sans** *command*"')
-            .addField("\u200B", "\u200B");
+            .setDescription(
+                `Use \'*sans* **command**\' with any of the following.`)
     prefFields.forEach(field => {reply.addField(field.name, field.value)});
     reply.addField("\u200B", "\u200B")
         .addField(
