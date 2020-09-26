@@ -1,6 +1,6 @@
 import { Queue } from './Queue.js';
 export class MusicPlayer {
-    constructor(parent) {
+    constructor() {
         this.play = async (stream, vc) => {
             this.connection = await vc.join().then(conn => conn).catch(err => {
                 console.log(err);
@@ -18,6 +18,7 @@ export class MusicPlayer {
             this.dispatcher.on('error', err => {
                 console.error(err);
                 this.destroy();
+                throw `MusicPlayer encountered an error.`;
             });
             this.dispatcher.on('debug', console.debug);
             this.dispatcher.on('warn', console.warn);
@@ -52,7 +53,6 @@ export class MusicPlayer {
             if (this.connection) {
                 this.connection.disconnect();
             }
-            this.parent.destroyChild(this);
         };
         this.startTimeout = () => {
             setTimeout(() => {
@@ -63,7 +63,6 @@ export class MusicPlayer {
         };
         this.queue = new Queue();
         this.isPlaying = false;
-        this.parent = parent;
         this.timeoutTime = 10 * 60 * 1000;
     }
 }

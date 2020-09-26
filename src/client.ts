@@ -23,12 +23,12 @@ export class SansClient {
   private _searchCommands: Map<string, SearchCommand>;
 
   // Dependencies for injection
-  private _musicManager: SansMusic;
+  private _musicManager: Map<string, SansMusic>;
   private _commandDescriptions: Map<string, CommandDescription>;
 
   constructor(prefix: string, token: string) {
     this._client = new Discord.Client();
-    this._musicManager = new SansMusic(this);
+    this._musicManager = new Map();
     this._commandDescriptions = new Map();
     this._commands = new Map();
     this._searchCommands = new Map();

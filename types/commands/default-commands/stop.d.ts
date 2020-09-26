@@ -1,9 +1,10 @@
 import { MusicPlayer as SansMusic } from '../../audio-processing/MusicPlayer.js';
-import { Command, SansDependencyReference, SansMessage } from "../command.js";
+import { Command, SansDependencies, SansDependencyReference, SansMessage } from "../command.js";
 export declare class Stop implements Command {
     name: string;
     description: string;
-    musicPlayer: SansMusic;
+    musicPlayer: Map<string, SansMusic>;
+    dependecies: SansDependencies[];
     constructor();
     execute(message: SansMessage): Promise<void>;
     addDeps(dep: SansDependencyReference): void;

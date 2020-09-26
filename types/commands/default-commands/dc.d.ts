@@ -4,7 +4,7 @@ export declare class Disconnect implements Command {
     name: string;
     description: string;
     dependecies: Deps[];
-    music: SansMusic;
+    musicPlayer: Map<string, SansMusic>;
     constructor();
     addDeps(dependecy: SansDependencyReference): void;
     execute(message: SansMessage): Promise<void>;

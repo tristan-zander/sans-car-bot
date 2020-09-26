@@ -4,9 +4,9 @@ export declare class Play implements Command {
     name: string;
     description: string;
     dependecies: SansDependencies[];
-    musicPlayer: SansMusic;
+    musicPlayer: Map<string, SansMusic>;
     constructor();
     execute(message: SansMessage): Promise<void>;
-    addDeps(dep: SansDependencyReference): void;
+    addDeps(dep: SansDependencyReference | any): void;
 }
 export default Play;

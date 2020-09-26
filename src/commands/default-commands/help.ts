@@ -1,13 +1,9 @@
 import * as Discord from 'discord.js'
-import * as fs from 'fs'
-import * as path from 'path'
-
 import {
   Command,
   SansDependencies,
   SansDependencyReference,
-  SansMessage,
-  SearchCommand
+  SansMessage
 } from '../command.js'
 
 export enum CommandType {
@@ -32,8 +28,12 @@ export class Help implements Command {
   description = 'Shows a list of commands.';
   dependecies = [ SansDependencies.CommandDescriptions ];
   private commandDescriptions: Map<string, CommandDescription>;
-  addDeps(dep: SansDependencyReference): void {
+  addDeps(dep: SansDependencyReference|any): void {
     if (dep instanceof Map) {
+      // TODO we actually don't know if we've gotten the right object here.
+      // Check the first member of the map to make sure that we got the right
+      // one. It doesn't matter if this or `instanceof` is slow because we only
+      // ever call this code once.
       this.commandDescriptions = dep;
     } else {
       console.error(`${this.name} was given the wrong dependency.`);

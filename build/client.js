@@ -1,13 +1,12 @@
 import * as Discord from 'discord.js';
 import * as fs from 'fs';
 import * as path from 'path';
-import { MusicPlayer as SansMusic } from './audio-processing/MusicPlayer.js';
 import { SansDependencies } from './commands/command.js';
 import { CommandDescription, CommandType } from './commands/default-commands/help.js';
 export class SansClient {
     constructor(prefix, token) {
         this._client = new Discord.Client();
-        this._musicManager = new SansMusic(this);
+        this._musicManager = new Map();
         this._commandDescriptions = new Map();
         this._commands = new Map();
         this._searchCommands = new Map();

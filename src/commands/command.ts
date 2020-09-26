@@ -11,7 +11,7 @@ export enum SansDependencies {
 
 // Add each dependecy to this type
 export type SansDependencyReference =
-    MusicDep|Map<string, CommandDescriptionsDep>;
+    Map<string, MusicDep>|Map<string, CommandDescriptionsDep>;
 
 export interface Command {
   readonly name: string;

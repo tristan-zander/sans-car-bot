@@ -7,10 +7,8 @@ export class MusicPlayer {
   // Stores queue, song, dispatcher, connection, and information on who played
   // the song
 
-  parent: any;
-
-  dispatcher;
-  connection;
+  dispatcher: Discord.StreamDispatcher;
+  connection: Discord.VoiceConnection;
 
   channel: Discord.VoiceChannel;
   queue: Queue;
@@ -19,18 +17,17 @@ export class MusicPlayer {
 
   timeoutTime: number;
 
-  constructor(parent: any) {
+  constructor() {
     this.queue = new Queue();
 
     this.isPlaying = false;
-
-    this.parent = parent;
 
     this.timeoutTime = 10 * 60 * 1000;
   }
 
   play =
-      async (stream, vc) => {
+      async (stream: string|any /*|internal.Readable*/,
+             vc: Discord.VoiceChannel) => {
     this.connection = await vc.join().then(conn => conn).catch(err => {
       // message.reply('There was an error connecting to the voice channel.');
       console.log(err);
@@ -54,7 +51,8 @@ export class MusicPlayer {
     // handle errors appropriately
     this.dispatcher.on('error', err => {
       console.error(err);
-      this.destroy()
+      this.destroy();
+      throw `MusicPlayer encountered an error.`;
     });
 
     this.dispatcher.on('debug', console.debug);
@@ -105,8 +103,6 @@ export class MusicPlayer {
         if (this.connection) {
           this.connection.disconnect();
         }
-
-        this.parent.destroyChild(this);
       }
 
   startTimeout = () => {

@@ -1,4 +1,3 @@
-import { MusicPlayer as SansMusic } from '../../audio-processing/MusicPlayer.js';
 import { SansDependencies as Deps } from '../command.js';
 export class Disconnect {
     constructor() {
@@ -7,12 +6,27 @@ export class Disconnect {
         this.dependecies = [Deps.Music];
     }
     addDeps(dependecy) {
-        if (dependecy instanceof SansMusic)
-            this.music = dependecy;
+        if (dependecy instanceof Map)
+            this.musicPlayer = dependecy;
         else
             console.error(`${this.name} was given the wrong dependecy.`);
     }
     async execute(message) {
+        if (!this.musicPlayer) {
+            message.discord.reply("There was an error getting the music player. Please contact the developer if this happens consistently.");
+            throw `${this.name} does not have a reference to the MusicPlayer.`;
+        }
+        else {
+            let music = this.musicPlayer.get(message.discord.guild.id);
+            if (music.dispatcher) {
+                music.dispatcher.destroy();
+            }
+            if (music.connection) {
+                music.connection.disconnect();
+            }
+            music.queue.empty();
+            music.startTimeout();
+        }
     }
 }
 export default Disconnect;

@@ -14,7 +14,7 @@ export declare class Help implements Command {
     description: string;
     dependecies: SansDependencies[];
     private commandDescriptions;
-    addDeps(dep: SansDependencyReference): void;
+    addDeps(dep: SansDependencyReference | any): void;
     constructor();
     execute(message: SansMessage): Promise<void>;
 }

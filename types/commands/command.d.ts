@@ -5,7 +5,7 @@ export declare enum SansDependencies {
     Music = 0,
     CommandDescriptions = 1
 }
-export declare type SansDependencyReference = MusicDep | Map<string, CommandDescriptionsDep>;
+export declare type SansDependencyReference = Map<string, MusicDep> | Map<string, CommandDescriptionsDep>;
 export interface Command {
     readonly name: string;
     readonly description: string;
