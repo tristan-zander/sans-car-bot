@@ -1,0 +1,13 @@
+[Unit]
+Description=Discord bot that says Sans Car
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=npm run start
+WorkingDirectory=/home/gale/Repos/sans-car-bot/
+Restart=always
+User=gale
+
+[Install]
+WantedBy=default.target
