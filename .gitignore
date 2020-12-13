@@ -1,3 +1,6 @@
+build/*
+types/*
+
 # TypeScript intermediary files (always build the project first)
 *.js.map
 
